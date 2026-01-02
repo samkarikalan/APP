@@ -119,6 +119,43 @@ function toggleActive(index, checkbox) {
 	
 }
 
+
+function toggleGender(index, iconEl) {
+  const player = schedulerState.allPlayers[index];
+
+  // 1️⃣ Toggle data model
+  player.gender = player.gender === "Male" ? "Female" : "Male";
+
+  // 2️⃣ Update icon
+  iconEl.textContent = player.gender === "Male" ? "👨‍💼" : "🙎‍♀️";
+
+  // 3️⃣ Update icon class
+  iconEl.classList.remove("male", "female");
+  iconEl.classList.add(player.gender.toLowerCase());
+
+  // 4️⃣ Update card class
+  const card = iconEl.closest(".player-edit-card");
+  card.classList.remove("male", "female");
+  card.classList.add(player.gender.toLowerCase());
+
+  // 5️⃣ Update linked variables
+  updateGenderGroups();
+
+  // 6️⃣ Refresh dependent UI
+  updateFixedPairSelectors();
+}
+
+function updateGenderGroups() {
+  schedulerState.malePlayers = schedulerState.allPlayers
+    .filter(p => p.gender === "Male" && p.active)
+    .map(p => p.name);
+
+  schedulerState.femalePlayers = schedulerState.allPlayers
+    .filter(p => p.gender === "Female" && p.active)
+    .map(p => p.name);
+}
+
+
 /* =========================
    ADD PLAYERS FROM TEXT
 ========================= */
