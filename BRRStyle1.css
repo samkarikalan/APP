@@ -377,6 +377,7 @@ body {
   background-color: #fce4ec;
   border-color: #f48fb1;
 }
+.gender-icon { cursor: pointer; }
 
 /* Inactive state */
 .player-edit-card.inactive {

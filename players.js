@@ -293,7 +293,10 @@ function createPlayerCard(player, index) {
     </div>
     <div class="pec-col pec-sl">${index + 1}</div>
     <div class="pec-col pec-gender">
-      <span class="gender-icon ${player.gender.toLowerCase()}">${genderIcon}</span>
+      <span class="gender-icon ${player.gender.toLowerCase()}"
+      onclick="toggleGender(${index}, this)">
+  ${genderIcon}
+</span>
     </div> 
 
     <div class="pec-col pec-name">${player.name}</div>    
