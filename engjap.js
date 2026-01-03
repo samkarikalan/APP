@@ -193,6 +193,55 @@ vi: {
   help: "Trợ giúp"
 }
   
+zh: {
+  appTitle: "CLUB 调度器",
+  home: "首页",
+  players: "球员",
+  rounds: "回合",
+  summary: "汇总",
+  language: "语言",
+  fontSize: "字体大小",
+  reset: "重置",
+  resetAll: "重置应用",
+  resetExcept: "仅重置比赛",
+  enterCourts: "输入场地数量",
+  importPlayers: "导入多个球员 ▶",
+  gender: "性别",
+  male: "男",
+  female: "女",
+  import: "导入",
+  cancel: "取消",
+  enterPlayerName: "输入球员姓名",
+  addPlayer: "添加球员",
+  fixedPairs: "设置固定搭档（可选）",
+  add: "添加",
+  pround: " 回合",
+  nround: "回合 ",
+  roundShort: "R",
+  rank: "排名",
+  name: "姓名",
+  played: "已比赛",
+  rested: "休息次数",
+  importExample: "姓名,性别\nKari,男\nBhavani,女",
+  Timer: "计时器",
+  min: "分钟",
+  selectPlayer1: "选择球员 1",
+  selectPlayer2: "选择球员 2",
+  small: "小",
+  medium: "中",
+  large: "大",
+  maxcourts: "请输入场地数量",
+  sittingOut: "休息中:",
+  courts: "场地",
+  theme: "主题",
+  light: "浅色",
+  dark: "深色",
+  export: "导出",
+  exporthtml: "📄 导出汇总",
+  help: "帮助"
+}
+  
+  
   
 };
 
