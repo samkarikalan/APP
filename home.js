@@ -1,12 +1,10 @@
 
 let currentLang = "en";
-
 function toggleLangMenu() {
   const menu = document.getElementById("langMenu");
   menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 
-// close when tapping outside
 document.addEventListener("click", e => {
   if (!e.target.closest(".select-wrapper")) {
     document.getElementById("langMenu").style.display = "none";
@@ -17,10 +15,9 @@ document.querySelectorAll(".lang-item").forEach(item => {
   item.addEventListener("click", () => {
     const value = item.dataset.value;
     const flag = item.dataset.flag;
-    const label = item.querySelector(".label").textContent;
 
+    // 🔥 ONLY update icon (no text)
     document.getElementById("currentFlag").textContent = flag;
-    document.getElementById("currentLabel").textContent = label;
 
     document.querySelectorAll(".lang-item").forEach(i => {
       i.classList.remove("selected");
@@ -31,6 +28,7 @@ document.querySelectorAll(".lang-item").forEach(item => {
     item.classList.add("selected");
     item.insertAdjacentHTML("beforeend", '<span class="check">✓</span>');
 
+    // keep your original select & logic
     const select = document.querySelector(".lang-select");
     select.value = value;
     setLanguage(value);
