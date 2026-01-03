@@ -57,8 +57,9 @@ body {
 
 /* ===== LANGUAGE SELECTOR ===== */
 .select-wrapper {
-  margin-left: auto;
+  margin-left: auto;   /* 🔥 THIS pushes it right */
   position: relative;
+  z-index: 2;          /* stays clickable above logo */
 }
 
 .lang-display {
