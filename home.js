@@ -1,6 +1,43 @@
 
 let currentLang = "en";
 
+function toggleLangMenu() {
+  const menu = document.getElementById("langMenu");
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+// close when tapping outside
+document.addEventListener("click", e => {
+  if (!e.target.closest(".select-wrapper")) {
+    document.getElementById("langMenu").style.display = "none";
+  }
+});
+
+document.querySelectorAll(".lang-item").forEach(item => {
+  item.addEventListener("click", () => {
+    const value = item.dataset.value;
+    const flag = item.dataset.flag;
+    const label = item.querySelector(".label").textContent;
+
+    document.getElementById("currentFlag").textContent = flag;
+    document.getElementById("currentLabel").textContent = label;
+
+    document.querySelectorAll(".lang-item").forEach(i => {
+      i.classList.remove("selected");
+      const c = i.querySelector(".check");
+      if (c) c.remove();
+    });
+
+    item.classList.add("selected");
+    item.insertAdjacentHTML("beforeend", '<span class="check">✓</span>');
+
+    const select = document.querySelector(".lang-select");
+    select.value = value;
+    setLanguage(value);
+
+    document.getElementById("langMenu").style.display = "none";
+  });
+});
 
 /* ===== Theme ===== */
 
