@@ -55,26 +55,6 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ===== TOP BAR ===== */
-.top-bar {
-  display: flex;
-  align-items: center;
-  padding: 10px 12px;
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-}
-
-.menu-btn {
-  font-size: 22px;
-  cursor: pointer;
-  margin-right: 12px;
-}
-
-.app-logo-premium {
-  font-size: 18px;
-  font-weight: 600;
-}
-
 /* ===== LANGUAGE SELECTOR ===== */
 .select-wrapper {
   margin-left: auto;
