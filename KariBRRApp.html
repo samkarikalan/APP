@@ -27,12 +27,10 @@
 <body>
 <div class="top-bar">
   <span class="menu-btn" onclick="showPage('homePage', this)">☰</span>
-
   <span class="app-logo-premium">CLUB Scheduler</span>
 
-  <!-- Language selector -->
   <div class="select-wrapper">
-    <div class="lang-display icon-only" onclick="toggleLangMenu()">
+    <div class="lang-display" onclick="toggleLangMenu()">
       <span class="flag" id="currentFlag">🌐</span>
     </div>
 
@@ -42,29 +40,24 @@
         <span class="label">English</span>
         <span class="check">✓</span>
       </div>
-
       <div class="lang-item" data-value="jp" data-flag="🇯🇵">
         <span class="flag">🇯🇵</span>
         <span class="label">日本語</span>
       </div>
-
       <div class="lang-item" data-value="kr" data-flag="🇰🇷">
         <span class="flag">🇰🇷</span>
         <span class="label">한국어</span>
       </div>
-
       <div class="lang-item" data-value="zh" data-flag="🇨🇳">
         <span class="flag">🇨🇳</span>
         <span class="label">中文</span>
       </div>
-
       <div class="lang-item" data-value="vi" data-flag="🇻🇳">
         <span class="flag">🇻🇳</span>
         <span class="label">Tiếng Việt</span>
       </div>
     </div>
 
-    <!-- Hidden real select -->
     <select class="lang-select" onchange="setLanguage(this.value)">
       <option id="lang_en" value="en">English</option>
       <option id="lang_jp" value="jp">日本語</option>
