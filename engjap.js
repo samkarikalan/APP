@@ -191,7 +191,7 @@ vi: {
   export: "Xuất",
   exporthtml: "📄 Xuất bản tóm tắt",
   help: "Trợ giúp"
-}
+},
   
 zh: {
   appTitle: "CLUB 调度器",

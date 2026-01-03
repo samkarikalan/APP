@@ -53,16 +53,23 @@
   <div class="settings-wrap">
 
     <!-- Language -->
-    <div class="settings-card card-language">
-      <div class="sec" data-i18n="language"></div>
-      <div class="row">
-        <div class="btn active" id="lang_en" onclick="setLanguage('en')">English</div>
-        <div class="btn" id="lang_jp" onclick="setLanguage('jp')">日本語</div>
-        <div class="btn" id="lang_kr" onclick="setLanguage('kr')">한국어</div>
-        <div class="btn" id="lang_kr" onclick="setLanguage('zh')">中文</div>
-        <div class="btn" id="lang_vi" onclick="setLanguage('vi')">Tiếng Việt</div>
-      </div>
+   <div class="settings-card card-language">
+  <div class="row lang-row">
+    <div class="sec" data-i18n="language">Language</div>
+
+    <div class="select-wrapper">
+      <span class="globe">🌐</span>
+      <select class="lang-select" onchange="setLanguage(this.value)">
+        <option id="lang_en" value="en">English</option>
+        <option id="lang_jp" value="jp">日本語</option>
+        <option id="lang_kr" value="kr">한국어</option>
+        <option id="lang_zh" value="zh">中文</option>
+        <option id="lang_vi" value="vi">Tiếng Việt</option>
+      </select>
+      <span class="arrow">▾</span>
     </div>
+  </div>
+</div>
 
     <!-- Font Size -->
     <div class="settings-card card-font">

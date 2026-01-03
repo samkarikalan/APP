@@ -257,6 +257,67 @@ body {
   color: #374151;
 }
 
+
+.lang-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px;
+}
+
+
+
+/* Select container */
+.select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #f5f7fa;
+  border-radius: 12px;
+  padding: 0 36px 0 38px;
+  height: 44px;
+  min-width: 160px;
+}
+
+/* Native select */
+.lang-select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  outline: none;
+}
+
+/* Globe icon */
+.globe {
+  position: absolute;
+  left: 12px;
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+/* Dropdown arrow */
+.arrow {
+  position: absolute;
+  right: 12px;
+  font-size: 14px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Focus effect */
+.lang-select:focus {
+  outline: none;
+}
+.select-wrapper:has(.lang-select:focus) {
+  box-shadow: 0 0 0 2px #4f8cff33;
+}
+
 /* players*/
 /* Modal Background */
 #importModal {
