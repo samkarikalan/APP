@@ -25,16 +25,15 @@
 </head>
 
 <body>
-  <div class="top-bar">
+<div class="top-bar">
   <span class="menu-btn" onclick="showPage('homePage', this)">☰</span>
 
   <span class="app-logo-premium">CLUB Scheduler</span>
 
-  <!-- Language selector (RIGHT SIDE) -->
+  <!-- Language selector -->
   <div class="select-wrapper">
-    <div class="lang-display" onclick="toggleLangMenu()">
+    <div class="lang-display icon-only" onclick="toggleLangMenu()">
       <span class="flag" id="currentFlag">🌐</span>
-      <span class="label" id="currentLabel">English</span>
     </div>
 
     <div class="lang-menu" id="langMenu">
@@ -65,7 +64,7 @@
       </div>
     </div>
 
-    <!-- Hidden real select (keeps your IDs & logic) -->
+    <!-- Hidden real select -->
     <select class="lang-select" onchange="setLanguage(this.value)">
       <option id="lang_en" value="en">English</option>
       <option id="lang_jp" value="jp">日本語</option>
