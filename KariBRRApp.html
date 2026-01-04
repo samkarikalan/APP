@@ -25,48 +25,10 @@
 </head>
 
 <body>
-<div class="top-bar">
-  <span class="menu-btn" onclick="showPage('homePage', this)">☰</span>
-  <span class="app-logo-premium">CLUB Scheduler</span>
-
-  <div class="select-wrapper">
-    <div class="lang-display" onclick="toggleLangMenu()">
-      <span class="flag" id="currentFlag">🌐</span>
-    </div>
-
-    <div class="lang-menu" id="langMenu">
-      <div class="lang-item selected" data-value="en" data-flag="🇺🇸">
-        <span class="flag">🇺🇸</span>
-        <span class="label">English</span>
-        <span class="check">✓</span>
-      </div>
-      <div class="lang-item" data-value="jp" data-flag="🇯🇵">
-        <span class="flag">🇯🇵</span>
-        <span class="label">日本語</span>
-      </div>
-      <div class="lang-item" data-value="kr" data-flag="🇰🇷">
-        <span class="flag">🇰🇷</span>
-        <span class="label">한국어</span>
-      </div>
-      <div class="lang-item" data-value="zh" data-flag="🇨🇳">
-        <span class="flag">🇨🇳</span>
-        <span class="label">中文</span>
-      </div>
-      <div class="lang-item" data-value="vi" data-flag="🇻🇳">
-        <span class="flag">🇻🇳</span>
-        <span class="label">Tiếng Việt</span>
-      </div>
-    </div>
-
-    <select class="lang-select" onchange="setLanguage(this.value)">
-      <option id="lang_en" value="en">English</option>
-      <option id="lang_jp" value="jp">日本語</option>
-      <option id="lang_kr" value="kr">한국어</option>
-      <option id="lang_zh" value="zh">中文</option>
-      <option id="lang_vi" value="vi">Tiếng Việt</option>
-    </select>
-  </div>
-</div>
+  <div class="top-bar">
+     <span class="menu-btn" onclick="showPage('homePage', this)">☰</span>
+     <span class="app-logo-premium">CLUB Scheduler</span>
+   </div>
 
 
 <!-- ============================= -->
@@ -92,8 +54,7 @@
 
     <!-- Language -->
    <div class="settings-card card-language">
-  <div class="row lang-row">
-    <div class="sec" data-i18n="language">Language</div>
+  <div class="row lang-row">  
 
     <div class="select-wrapper">
       <span class="globe">🌐</span>

@@ -1,41 +1,6 @@
 
 let currentLang = "en";
-function toggleLangMenu() {
-  const menu = document.getElementById("langMenu");
-  menu.style.display = menu.style.display === "block" ? "none" : "block";
-}
 
-document.addEventListener("click", e => {
-  if (!e.target.closest(".select-wrapper")) {
-    document.getElementById("langMenu").style.display = "none";
-  }
-});
-
-document.querySelectorAll(".lang-item").forEach(item => {
-  item.addEventListener("click", () => {
-    const value = item.dataset.value;
-    const flag = item.dataset.flag;
-
-    // 🔥 ONLY update icon (no text)
-    document.getElementById("currentFlag").textContent = flag;
-
-    document.querySelectorAll(".lang-item").forEach(i => {
-      i.classList.remove("selected");
-      const c = i.querySelector(".check");
-      if (c) c.remove();
-    });
-
-    item.classList.add("selected");
-    item.insertAdjacentHTML("beforeend", '<span class="check">✓</span>');
-
-    // keep your original select & logic
-    const select = document.querySelector(".lang-select");
-    select.value = value;
-    setLanguage(value);
-
-    document.getElementById("langMenu").style.display = "none";
-  });
-});
 
 /* ===== Theme ===== */
 
