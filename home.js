@@ -2,6 +2,19 @@
 let currentLang = "en";
 
 function toggleLangMenu() {
+  const menu = document.getElementById('langMenu');
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
+
+document.querySelectorAll('.lang-menu div').forEach(item => {
+  item.addEventListener('click', () => {
+    document.getElementById('currentFlag').textContent = item.dataset.flag;
+    setLanguage(item.dataset.lang);
+    document.getElementById('langMenu').style.display = 'none';
+  });
+});
+
+function toggleLangMenu3() {
   document.getElementById("langMenu").classList.toggle("show");
 }
 /* ===== Theme ===== */

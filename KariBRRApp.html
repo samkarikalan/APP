@@ -26,23 +26,25 @@
 
 <body>
   <div class="top-bar">
-  <!-- Left: menu -->
-  <span class="menu-btn" onclick="showPage('homePage', this)">☰</span>
+  <span class="menu-btn">☰</span>
 
-  <!-- Center: title -->
   <span class="app-logo-premium">CLUB Scheduler</span>
 
-  <!-- Right: language -->
-  <span class="lang-btn" onclick="toggleLangMenu()">🌐</span>
-</div>
+  <!-- Flag button ONLY -->
+  <div class="lang-wrapper">
+    <button class="lang-btn" onclick="toggleLangMenu()" aria-label="Language">
+      <span id="currentFlag">🇺🇸</span>
+    </button>
 
-<!-- Language dropdown (hidden by default) -->
-<div class="lang-menu" id="langMenu">
-  <div onclick="setLanguage('en')">🇺🇸 English</div>
-  <div onclick="setLanguage('jp')">🇯🇵 日本語</div>
-  <div onclick="setLanguage('kr')">🇰🇷 한국어</div>
-  <div onclick="setLanguage('zh')">🇨🇳 中文</div>
-  <div onclick="setLanguage('vi')">🇻🇳 Tiếng Việt</div>
+    <!-- Custom menu -->
+    <div class="lang-menu" id="langMenu">
+      <div data-lang="en" data-flag="🇺🇸">🇺🇸 English</div>
+      <div data-lang="jp" data-flag="🇯🇵">🇯🇵 日本語</div>
+      <div data-lang="kr" data-flag="🇰🇷">🇰🇷 한국어</div>
+      <div data-lang="zh" data-flag="🇨🇳">🇨🇳 中文</div>
+      <div data-lang="vi" data-flag="🇻🇳">🇻🇳 Tiếng Việt</div>
+    </div>
+  </div>
 </div>
 
 
@@ -64,26 +66,7 @@
 <!--           HOME PAGE           -->
 <!-- ============================= -->
 <div id="homePage" class="page" style="display:none;">
-
   <div class="settings-wrap">
-
-    <!-- Language -->
-   <div class="settings-card card-language">
-  <div class="row lang-row">  
-
-    <div class="select-wrapper">
-      <span class="globe">🌐</span>
-      <select class="lang-select" onchange="setLanguage(this.value)">
-        <option id="lang_en" value="en">English</option>
-        <option id="lang_jp" value="jp">日本語</option>
-        <option id="lang_kr" value="kr">한국어</option>
-        <option id="lang_zh" value="zh">中文</option>
-        <option id="lang_vi" value="vi">Tiếng Việt</option>
-      </select>
-      <span class="arrow">▾</span>
-    </div>
-  </div>
-</div>
 
     <!-- Font Size -->
     <div class="settings-card card-font">
