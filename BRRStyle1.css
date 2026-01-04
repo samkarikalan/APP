@@ -50,10 +50,11 @@ body {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-
+  overflow: visible;
   height: 56px;
   padding: 0 12px;
 }
+
 
 .menu-btn {
   font-size: 1.4rem;
