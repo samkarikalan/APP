@@ -860,7 +860,7 @@ if (IS_MIXED_SESSION && player?.gender) {
 
   genderBtn.textContent =
    //player.gender === 'Female' ? '👩' : '👨';
-   player.gender === 'Female' ? "🙎‍♀️ " : "👨‍💼 " ;
+   player.gender === 'Female' ? "🙎‍♀️" : "👨‍💼" ;
     
   btn.prepend(genderBtn);
 }
