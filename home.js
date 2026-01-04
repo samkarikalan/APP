@@ -1,7 +1,9 @@
 
 let currentLang = "en";
 
-
+function toggleLangMenu() {
+  document.getElementById("langMenu").classList.toggle("show");
+}
 /* ===== Theme ===== */
 
 function initLanguage() {
