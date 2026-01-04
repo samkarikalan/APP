@@ -26,9 +26,24 @@
 
 <body>
   <div class="top-bar">
-     <span class="menu-btn" onclick="showPage('homePage', this)">☰</span>
-     <span class="app-logo-premium">CLUB Scheduler</span>
-   </div>
+  <!-- Left: menu -->
+  <span class="menu-btn" onclick="showPage('homePage', this)">☰</span>
+
+  <!-- Center: title -->
+  <span class="app-logo-premium">CLUB Scheduler</span>
+
+  <!-- Right: language -->
+  <span class="lang-btn" onclick="toggleLangMenu()">🌐</span>
+</div>
+
+<!-- Language dropdown (hidden by default) -->
+<div class="lang-menu" id="langMenu">
+  <div onclick="setLanguage('en')">🇺🇸 English</div>
+  <div onclick="setLanguage('jp')">🇯🇵 日本語</div>
+  <div onclick="setLanguage('kr')">🇰🇷 한국어</div>
+  <div onclick="setLanguage('zh')">🇨🇳 中文</div>
+  <div onclick="setLanguage('vi')">🇻🇳 Tiếng Việt</div>
+</div>
 
 
 <!-- ============================= -->
