@@ -554,14 +554,19 @@ body.locked .swap-icon {
 
 
 #roundTitle {
-  margin: 8px auto 0 ;
+  display: inline-flex;        /* 🔑 key */
+  width: fit-content;          /* 🔑 key */
+
+  margin: 8px auto 0;
+  padding: 0 12px;
+
   font-size: 1.25rem;
   font-weight: bold;
-  
-  height: 2.0rem;
+  height: 2rem;
+
   border-radius: 0.5rem;
   background-color: #dce2a3;
-  display: flex;
+
   justify-content: center;
   align-items: center;
   text-align: center;
