@@ -809,3 +809,12 @@ z-index: 1000;
   transform: scale(0.97);
 }
 
+.help-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin: 16px 0;
+  padding: 16px;
+  background: #fff;
+}
+.help-card h3 { margin-top: 0; }
+.help-btn.active { background: #1976d2; color: #fff; }
