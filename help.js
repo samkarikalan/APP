@@ -1,4 +1,4 @@
-function loadHelp(type) {
+function loadHelp2(type) {
   // hide all help blocks
   document.querySelectorAll(".player-help").forEach(el => {
     el.style.display = "none";
@@ -52,7 +52,7 @@ function loadHelp(sectionKey) {
 
   // If data is not loaded yet, fetch it first
   if (!helpData) {
-    fetch(`https://samkarikalan.github.io/APP/Help/help_${lang}.json`)
+    fetch(`https://samkarikalan.github.io/APP/help_${lang}.json`)
       .then(res => res.json())
       .then(data => {
         helpData = data;
