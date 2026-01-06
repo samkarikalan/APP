@@ -370,7 +370,8 @@ function allPairsExhausted(queue, pairPlayedSet) {
 
 
 function updSchedule(roundIndex, schedulerState) {
-  const data = allRounds[roundIndex];
+  AUTO_SAVE();
+	const data = allRounds[roundIndex];
   if (!data) return;
 
   const { games, resting } = data;
