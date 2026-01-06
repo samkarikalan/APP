@@ -342,6 +342,8 @@ z-index: 1000;
 }
 
  .app-dark .settings-card {
+  padding: 9px 6px;
+  border-radius: 10px;
   background: #b8e0f85e;          /* soft grey */
   box-shadow: 0 5px 14px rgba(55,65,81,.18);
 }
