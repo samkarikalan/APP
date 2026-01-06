@@ -21,7 +21,8 @@
   <script src="summary.js" defer></script>
   <script src="help.js" defer></script>
   <script src="ExportCSS.js" defer></script>
-  <script src="SaveRestore.js" defer></script>
+  <!--
+  <script src="SaveRestore.js" defer></script> -->
 
   
 </head>
@@ -211,9 +212,9 @@
 
 <div id="page4" class="page" style="display:none;">
   <div class="help-buttons">
-    <button class="help-btn active" onclick="loadHelp('players')">Players</button>
-    <button class="help-btn" onclick="loadHelp('rounds')">Rounds</button>
-    <button class="help-btn" onclick="loadHelp('summary')">Summary</button>
+    <button class="help-btn active" onclick="loadHelp('players')" data-i18n="players"></button>
+    <button class="help-btn" onclick="loadHelp('rounds')" data-i18n="rounds"></button>
+    <button class="help-btn" onclick="loadHelp('summary')" data-i18n="summary"></button>
   </div>
   <div id="helpContainer"></div>
 </div>
