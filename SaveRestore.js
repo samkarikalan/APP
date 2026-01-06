@@ -1,5 +1,22 @@
 const AUTO_SAVE = () => saveAppState();
 
+window.onerror = function (msg, src, line, col, err) {
+  localStorage.setItem("CLUB_SCHEDULER_LAST_ERROR", JSON.stringify({
+    msg, src, line, col,
+    stack: err?.stack || null,
+    time: new Date().toISOString()
+  }));
+  saveAppState();
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (restoreAppState()) {
+    updateCourtDisplay();
+    showRound(currentRoundIndex);
+    if (isOnPage2) showPage('page2');
+  }
+});
+
 function serializeMap(map) {
   return Array.from(map.entries());
 }
