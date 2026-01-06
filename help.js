@@ -1,64 +1,34 @@
-function loadHelp2(type) {
-  // hide all help blocks
-  document.querySelectorAll(".player-help").forEach(el => {
-    el.style.display = "none";
-  });
-
-  // show selected help
-  const help = document.getElementById(`${type}Help`);
-  if (!help) {
-    console.warn("Help block not found:", `${type}Help`);
-    return;
-  }
-
-  help.style.display = "block";
-
-  // update active button
-  document.querySelectorAll(".help-btn").forEach(btn => {
-    btn.classList.remove("active");
-  });
-  event.target.classList.add("active");
-
-  // apply language
-  const savedLang = localStorage.getItem("appLanguage");  
-  updateHelpLanguage(savedLang);
-  
-}
-
-function updateHelpLanguage(lang) {  
-  document.querySelectorAll(".player-help").forEach(help => {
-    help.classList.remove("lang-en", "lang-jp", "lang-kr", "lang-vi");
-    help.classList.add(`lang-${lang}`);
-  });
-}
-
-
-function updateHelpLanguage2(appLang) {
-  const help = document.querySelector(".player-help");
-  if (!help) return;
-
-  help.classList.remove("lang-en", "lang-jp", "lang-kr", "lang-vi");
-  help.classList.add(`lang-${appLang}`);
-}
-
-
-var lang = window.lang || 'en';
 var helpData = null;
+var loadedLang = null;
+var currentHelpSection = 'players';
 
 function loadHelp(sectionKey) {
-  // Update button styles
-  document.querySelectorAll('.help-btn').forEach(btn => btn.classList.remove('active'));
-  document.querySelector(`.help-btn[onclick="loadHelp('${sectionKey}')"]`).classList.add('active');
+  currentHelpSection = sectionKey;
 
-  // If data is not loaded yet, fetch it first
-  if (!helpData) {
-    fetch(`https://samkarikalan.github.io/APP/help_${lang}.json`)
-      .then(res => res.json())
+  var lang = localStorage.getItem("appLanguage") || "en";
+
+  // Update active button
+  document.querySelectorAll('.help-btn')
+    .forEach(btn => btn.classList.remove('active'));
+
+  var activeBtn = document.querySelector(
+    `.help-btn[onclick="loadHelp('${sectionKey}')"]`
+  );
+  if (activeBtn) activeBtn.classList.add('active');
+
+  // Reload help JSON if language changed
+  if (!helpData || loadedLang !== lang) {
+    fetch(`https://samkarikalan.github.io/APP/help_${lang}.json?v=${Date.now()}`)
+      .then(res => {
+        if (!res.ok) throw new Error("Help file not found");
+        return res.json();
+      })
       .then(data => {
         helpData = data;
+        loadedLang = lang;
         showHelpSection(sectionKey);
       })
-      .catch(err => {
+      .catch(() => {
         document.getElementById('helpContainer').innerHTML =
           '<p style="color:red;">Help file not available for this language.</p>';
       });
@@ -68,25 +38,41 @@ function loadHelp(sectionKey) {
 }
 
 function showHelpSection(sectionKey) {
-  var sectionObj = helpData[sectionKey];
+  var container = document.getElementById('helpContainer');
+  var sectionObj = helpData?.[sectionKey];
+
   if (!sectionObj) {
-    document.getElementById('helpContainer').innerHTML = '<p>No help found for this section.</p>';
+    container.innerHTML = '<p>No help found for this section.</p>';
     return;
   }
+
   var html = '';
-  // Loop each topic in the section
+
   for (var topicKey in sectionObj) {
     var topic = sectionObj[topicKey];
     html += `
       <div class="help-card">
-        <h3>${topic.title || ''}</h3>
+        ${topic.title ? `<h3>${topic.title}</h3>` : ''}
         ${topic.content ? `<p>${topic.content}</p>` : ''}
-        ${topic.list ? `<ul>${topic.list.map(item => `<li>${item}</li>`).join('')}</ul>` : ''}
+        ${topic.list
+          ? `<ul>${topic.list.map(item => `<li>${item}</li>`).join('')}</ul>`
+          : ''}
       </div>
     `;
   }
-  document.getElementById('helpContainer').innerHTML = html;
+
+  container.innerHTML = html;
+}
+
+/* ===============================
+   LANGUAGE CHANGE HANDLER
+   =============================== */
+function changeLanguage(lang) {
+  localStorage.setItem("appLanguage", lang);
+
+  // 🔥 Instantly refresh help in current section
+  loadHelp(currentHelpSection);
 }
 
 // Initial load
-loadHelp('players');
+loadHelp(currentHelpSection);

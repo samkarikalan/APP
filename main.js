@@ -77,6 +77,10 @@ function showPage(pageID, el) {
      report();
 	 renderRounds();
    }
+
+	if (pageID === "page4") {
+
+   }
 	 // Update last visited page
   lastPage = pageID;
 }

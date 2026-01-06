@@ -554,7 +554,7 @@ body.locked .swap-icon {
 
 
 #roundTitle {
-  display: inline-flex;        /* 🔑 key */
+  display: flex;        /* 🔑 key */
   width: fit-content;          /* 🔑 key */
 
   margin: 8px auto 0;

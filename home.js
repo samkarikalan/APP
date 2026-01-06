@@ -3,7 +3,7 @@ let currentLang = "en";
 
 function toggleLangMenu() {
   const menu = document.getElementById('langMenu');
-  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';  
 }
 
 document.querySelectorAll('.lang-menu div').forEach(item => {
@@ -14,9 +14,7 @@ document.querySelectorAll('.lang-menu div').forEach(item => {
   });
 });
 
-function toggleLangMenu3() {
-  document.getElementById("langMenu").classList.toggle("show");
-}
+
 /* ===== Theme ===== */
 
 function initLanguage() {
@@ -25,21 +23,21 @@ const supportedLangs = ["en", "jp", "kr", "vi"];
 
 if (supportedLangs.includes(savedLang)) {
 setLanguage(savedLang);
-updateHelpLanguage(savedLang);
+//updateHelpLanguage(savedLang);
 } else {
 const browserLang = navigator.language.toLowerCase();
 if (browserLang.startsWith("ja")) {
 setLanguage("jp");
-updateHelpLanguage("jp");
+//updateHelpLanguage("jp");
 } else if (browserLang.startsWith("ko")) {
 setLanguage("kr");
-updateHelpLanguage("kr");
+//updateHelpLanguage("kr");
 } else if (browserLang.startsWith("vi")) {
 setLanguage("vi");
-updateHelpLanguage("vi");
+//updateHelpLanguage("vi");
 } else {
 setLanguage("en");
-updateHelpLanguage("en");
+//updateHelpLanguage("en");
 }
 }
 }
@@ -105,7 +103,7 @@ function setLanguage(lang) {
     el.placeholder = translations[lang][key] || "";
   });
   
-  updateHelpLanguage(lang);
+   loadHelp(currentHelpSection);
 }
 
 function updateRoundTitle(round) {
