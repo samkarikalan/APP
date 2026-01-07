@@ -15,12 +15,22 @@ document.querySelectorAll('.lang-menu div').forEach(item => {
 });
 
 
+
+const langFlagMap = {
+  en: "🇺🇸",
+  ja: "🇯🇵",
+  zh: "🇨🇳",
+  ko: "🇰🇷"
+};
 /* ===== Theme ===== */
 
 function initLanguage() {
 const savedLang = localStorage.getItem("appLanguage");
 const supportedLangs = ["en", "jp", "kr", "vi"];
-
+ // 2. update flag
+  document.getElementById("currentFlag").textContent =
+    langFlagMap[savedLang] || "🌐";
+  
 if (supportedLangs.includes(savedLang)) {
 setLanguage(savedLang);
 //updateHelpLanguage(savedLang);
