@@ -18,7 +18,7 @@ document.querySelectorAll('.lang-menu div').forEach(item => {
 
 const langFlagMap = {
   en: "🇺🇸",
-  ja: "🇯🇵",
+  jp: "🇯🇵",
   zh: "🇨🇳",
   ko: "🇰🇷"
 };
