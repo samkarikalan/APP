@@ -159,9 +159,116 @@ function updateGenderGroups() {
 /* =========================
    ADD PLAYERS FROM TEXT
 ========================= */
-
-
 function addPlayersFromText() {
+  const text = document.getElementById('players-textarea').value.trim();
+  if (!text) return;
+
+  const defaultGender =
+    document.querySelector('input[name="genderSelect"]:checked')?.value || "Male";
+
+  const lines = text.split(/\r?\n/);
+
+  const stopMarkers = [
+    /court full/i, /wl/i, /waitlist/i, /late cancel/i,
+    /cancelled/i, /reserve/i, /bench/i, /extras/i, /backup/i
+  ];
+
+  let startIndex = 0;
+  let stopIndex = lines.length;
+
+  const confirmLineIndex = lines.findIndex(line => /confirm/i.test(line));
+
+  if (confirmLineIndex >= 0) {
+    startIndex = confirmLineIndex + 1;
+    for (let i = startIndex; i < lines.length; i++) {
+      if (stopMarkers.some(re => re.test(lines[i]))) {
+        stopIndex = i;
+        break;
+      }
+    }
+  }
+
+  /* ------------------ Gender lookup ------------------ */
+  const genderLookup = {};
+  Object.values(translations).forEach(langObj => {
+    if (langObj.male) genderLookup[langObj.male.toLowerCase()] = "Male";
+    if (langObj.female) genderLookup[langObj.female.toLowerCase()] = "Female";
+  });
+
+  /* ------------------ Duplicate tracking ------------------ */
+
+  // Normalize existing players
+  const seenNames = new Set(
+    schedulerState.allPlayers.map(p =>
+      normalizeName(p.name)
+    )
+  );
+
+  const extractedNames = [];
+
+  for (let i = startIndex; i < stopIndex; i++) {
+    let line = lines[i].trim();
+    if (!line) continue;
+    if (line.toLowerCase().includes("https")) continue;
+
+    let gender = defaultGender;
+
+    // Handle "name,gender"
+    if (line.includes(",")) {
+      const parts = line.split(",").map(p => p.trim());
+      line = parts[0];
+
+      if (parts[1]) {
+        const g = parts[1].toLowerCase();
+        if (genderLookup[g]) gender = genderLookup[g];
+      }
+    }
+
+    // Handle parentheses gender
+    const parenMatch = line.match(/\(([^)]+)\)/);
+    if (parenMatch) {
+      const inside = parenMatch[1].toLowerCase();
+      if (genderLookup[inside]) gender = genderLookup[inside];
+      line = line.replace(/\([^)]+\)/, "").trim();
+    }
+
+    // Remove numbering prefix for comparison
+    const displayLine = line.replace(/^(\d+\.?\s*)/, "");
+    const normalized = normalizeName(displayLine);
+
+    // ✅ Duplicate check (global + same import)
+    if (seenNames.has(normalized)) continue;
+
+    seenNames.add(normalized);
+
+    extractedNames.push({
+      name: displayLine,
+      gender,
+      active: true
+    });
+  }
+
+  schedulerState.allPlayers.push(...extractedNames);
+
+  schedulerState.activeplayers = schedulerState.allPlayers
+    .filter(p => p.active)
+    .map(p => p.name)
+    .reverse();
+
+  updatePlayerList();
+  updateFixedPairSelectors();
+  hideImportModal();
+}
+
+/* ------------------ Helper ------------------ */
+function normalizeName(name) {
+  return name
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function xxxaddPlayersFromText() {
   const text = document.getElementById('players-textarea').value.trim();
   if (!text) return;
 
