@@ -177,7 +177,7 @@
 </div>
 
 
-
+<!--
 
 </div>  
   <div class="round-navigation">
@@ -193,7 +193,31 @@
   </div>
 </div>
 
+-->
 
+<div class="action-bar">
+  <button id="prevBtn"
+          class="primary-btn"
+          onclick="prevRound()"
+          disabled>
+    <span class="icon">◀</span>
+    <span data-i18n="pround">Previous</span>
+  </button>
+
+  <button id="roundTitle2"
+          class="icon-btn"
+          onclick="RefreshRound()">
+    ⟳
+  </button>
+
+  <button id="nextBtn"
+          class="primary-btn"
+          onclick="nextRound()"
+          disabled>
+    <span data-i18n="nround">Next</span>
+    <span class="icon arrow">▶</span>
+  </button>
+</div>
 
 <!-- Timer Sound -->
 <audio id="timerSound">
