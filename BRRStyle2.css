@@ -507,6 +507,99 @@ body.locked .swap-icon {
 
 }
 
+/* ===== Action Bar Container ===== */
+.action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 14px 16px;
+  background: linear-gradient(180deg, #0aa2ff, #0088e6);
+
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.25);
+  z-index: 100;
+}
+
+/* ===== Common Button Reset ===== */
+.action-bar button {
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Tap feedback */
+.action-bar button:active {
+  transform: scale(0.97);
+}
+
+/* ===== Rotate / Refresh Button ===== */
+.icon-btn {
+  width: 48px;
+  height: 48px;
+
+  background: #7b0fa2;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+
+  font-size: 20px;
+}
+
+/* ===== Primary Button ===== */
+.primary-btn {
+  flex: 1;
+  height: 56px;
+
+  background: #7b0fa2;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+
+  gap: 10px;
+  font-size: 18px;
+}
+
+/* ===== Danger Button ===== */
+.danger-btn {
+  width: 140px;
+  height: 56px;
+
+  background: #e53935;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.32);
+
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+/* ===== Icons ===== */
+.primary-btn .arrow {
+  font-size: 16px;
+}
+
+.danger-btn .flag {
+  font-size: 18px;
+}
+
+/* ===== Safe area for iPhone ===== */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .action-bar {
+    padding-bottom: calc(14px + env(safe-area-inset-bottom));
+  }
+}
+
+
 
 .round-navigation-card {
   background: #ffffff;          /* White card background */
