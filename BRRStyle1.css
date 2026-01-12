@@ -594,22 +594,6 @@ z-index: 1000;
   line-height: 1;
 }
 
-.card, .card-col {
-  background: #fff;
-  padding: 14px;
-  margin: 12px 0;
-  border-radius: 12px;  
-  box-shadow: 0 1px 5px rgba(0,0,0,0.07);
-}
-
-.card  {
-  width: 98%;
-  padding: 0.5rem;
-  margin: 0.5rem;
-  font-size: 1.15rem;
-  border-radius: 1rem;
-  box-sizing: border-box;
-}
 
 .fixed-card {
   display: grid;
@@ -660,19 +644,19 @@ z-index: 1000;
   align-items: center; /* vertical alignment */
 }
 
-.card select {
-  font-size: 1.15rem;
-  width: 100%;
-  padding: 0.5rem;
-  margin: 0.5rem 0;  
-  border-radius: 1rem;
-  box-sizing: border-box;
+.card, .card-col {
+  background: #fff;
+  padding: 14px;
+  margin: 12px 0;
+  border-radius: 12px;  
+  box-shadow: 0 1px 5px rgba(0,0,0,0.07);
 }
-.card input {
-  font-size: 1.15rem;
-  width: 100%;
+
+.card  {
+  width: 98%;
   padding: 0.5rem;
-  margin: 0.5rem 0;  
+  margin: 0.5rem;
+  font-size: 1.15rem;
   border-radius: 1rem;
   box-sizing: border-box;
 }
@@ -681,6 +665,23 @@ z-index: 1000;
 .card select {
   border: 0.0625rem solid #ccc;
 }
+.card select {
+  font-size: 1.15rem;
+  width: 100%;
+  padding: 0.5rem;
+  margin: 0.5rem 0;  
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+.card input {
+  font-size: 1.15rem;
+  width: 100%;
+  padding: 0.5rem;
+  margin: 0.5rem 0;  
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
 .card button {
   background: #800080;
   font-size: 1.15rem;
@@ -689,7 +690,7 @@ z-index: 1000;
   border: none;
   font-weight: bold;
   cursor: pointer;
-  border-radius: 2rem;
+  border-radius: 8px;
   padding: 0.75rem;
   width: 95%;
   margin: 0 0.5rem;
@@ -699,6 +700,9 @@ z-index: 1000;
 .card button:hover {  
   transform: scale(1.05);
 }
+
+
+
 
 
 /* Summary */

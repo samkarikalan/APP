@@ -548,36 +548,40 @@ function clearPreviousRound() {
 // Show a round
 function showRound(index) {
   clearPreviousRound();
+
   const resultsDiv = document.getElementById('game-results');
   resultsDiv.innerHTML = '';
+
   const data = allRounds[index];
   if (!data) return;
-  // ✅ Update round title
+
   const roundTitle = document.getElementById("roundTitle");
   roundTitle.className = "roundTitle";
-  roundTitle.innerText = translations[currentLang].roundno + " " + data.round;
-  // ✅ Create sections safely
+  roundTitle.innerText =
+    translations[currentLang].nround + " " + data.round;
+
   let restDiv = null;
   if (data.resting && data.resting.length !== 0) {
     restDiv = renderRestingPlayers(data, index);
   }
+
   const gamesDiv = renderGames(data, index);
-  // ✅ Wrap everything in a container to distinguish latest vs played
+
   const wrapper = document.createElement('div');
   const isLatest = index === allRounds.length - 1;
   wrapper.className = isLatest ? 'latest-round' : 'played-round';
-  // ✅ Append conditionally
+
   if (restDiv) {
-    wrapper.append(gamesDiv,restDiv);
+    wrapper.append(gamesDiv, restDiv);
   } else {
     wrapper.append(gamesDiv);
   }
-  resultsDiv.append(wrapper);
-  // ✅ Navigation buttons
-  //document.getElementById('prevBtn').disabled = index === 0;
-  //document.getElementById('nextBtn').disabled = false;
-}
 
+  resultsDiv.append(wrapper);
+
+  document.getElementById('prevBtn').disabled = index === 0;
+  document.getElementById('nextBtn').disabled = false;
+}
 
 // Resting players display
 function t(key) {
@@ -778,57 +782,47 @@ function renderGames(data, index) {
 
   data.games.forEach((game, gameIndex) => {
 
-    // 🟦 Create the main container for the court
-    const courtDiv = document.createElement('div');
-    courtDiv.className = 'courtcard';
+    // 🟦 Court card (visual only)
+    const courtCard = document.createElement('div');
+    courtCard.className = 'plcourt-card';
 
-    // 🏟️ Court name / number (TOP)
-    const courtName = document.createElement('div');
-    courtName.classList.add('courtname');
-    courtName.textContent = `Court ${gameIndex + 1}`;
+    // 🟨 Court number (UI only)
+    const courtNo = document.createElement('div');
+    courtNo.className = 'court-number';
+    courtNo.innerText = 'Court ' + (game.court ?? (gameIndex + 1));
+    courtCard.appendChild(courtNo);
 
-    // 🟨 Teams container (BELOW court name)
     const teamsDiv = document.createElement('div');
     teamsDiv.className = 'teams';
 
-    // Helper → Team letters (A, B, C, D...)
-    const getTeamLetter = (gameIndex, teamSide) => {
-      const teamNumber = gameIndex * 2 + (teamSide === 'L' ? 0 : 1);
-      return String.fromCharCode(65 + teamNumber);
-    };
-
-    // 🧩 Create a team block
     const makeTeamDiv = (teamSide) => {
       const teamDiv = document.createElement('div');
       teamDiv.className = 'team';
       teamDiv.dataset.teamSide = teamSide;
       teamDiv.dataset.gameIndex = gameIndex;
 
-      // 🔁 Swap icon
-      const swapIcon = document.createElement('div');
-      swapIcon.className = 'swap-icon';
-      swapIcon.innerHTML = '🔁';
-      teamDiv.appendChild(swapIcon);
-
-      // 👥 Add player buttons
-      const teamPairs = teamSide === 'L' ? game.pair1 : game.pair2;
-      teamPairs.forEach((p, i) => {
+      const players = teamSide === 'L' ? game.pair1 : game.pair2;
+      players.forEach((p, i) => {
         teamDiv.appendChild(
           makePlayerButton(p, teamSide, gameIndex, i, data, index)
         );
       });
 
-      // ✅ Swap logic (only for latest round)
+      // ✅ Direct tap swap ONLY for latest round
       const isLatestRound = index === allRounds.length - 1;
       if (isLatestRound) {
-        swapIcon.addEventListener('click', (e) => {
+        teamDiv.addEventListener('click', (e) => {
           e.stopPropagation();
           e.preventDefault();
 
           if (window.selectedTeam) {
             const src = window.selectedTeam;
 
-            if (src.gameIndex !== gameIndex) {
+            // prevent same-team double tap
+            if (
+              src.gameIndex !== gameIndex ||
+              src.teamSide !== teamSide
+            ) {
               handleTeamSwapAcrossCourts(
                 src,
                 { teamSide, gameIndex },
@@ -837,12 +831,13 @@ function renderGames(data, index) {
               );
             }
 
+            // clear selection
             window.selectedTeam = null;
             document
               .querySelectorAll('.selected-team')
-              .forEach(b => b.classList.remove('selected-team'));
-
+              .forEach(el => el.classList.remove('selected-team'));
           } else {
+            // select first team
             window.selectedTeam = { teamSide, gameIndex };
             teamDiv.classList.add('selected-team');
           }
@@ -852,93 +847,18 @@ function renderGames(data, index) {
       return teamDiv;
     };
 
-    // 🟢 Create left & right teams
-    const teamLeft = makeTeamDiv('L');
-    const teamRight = makeTeamDiv('R');
+    const teamL = makeTeamDiv('L');
+    const teamR = makeTeamDiv('R');
 
-    // ⚪ VS label
     const vs = document.createElement('span');
     vs.className = 'vs';
     vs.innerText = '  ';
 
-    // 🧱 Build structure (ORDER MATTERS)
-    teamsDiv.append(teamLeft, vs, teamRight);
-    courtDiv.append(courtName, teamsDiv);
-    wrapper.appendChild(courtDiv);
+    teamsDiv.append(teamL, vs, teamR);
+    courtCard.appendChild(teamsDiv);
+    wrapper.appendChild(courtCard);
   });
 
-  return wrapper;
-}
-
-
-function renderGamesxxx(data, index) {
-  const wrapper = document.createElement('div');
-  data.games.forEach((game, gameIndex) => {
-    // 🟦 Create the main container for the match
-    const courtDiv = document.createElement('div');
-    courtDiv.className = 'courtcard';
-    
-    const teamsDiv = document.createElement('div');
-    teamsDiv.className = 'teams';
-    // Helper → Team letters (A, B, C, D...)
-    const getTeamLetter = (gameIndex, teamSide) => {
-      const teamNumber = gameIndex * 2 + (teamSide === 'L' ? 0 : 1);
-      return String.fromCharCode(65 + teamNumber);
-    };
-    const makeTeamDiv = (teamSide) => {
-      const teamDiv = document.createElement('div');
-      teamDiv.className = 'team';
-      teamDiv.dataset.teamSide = teamSide;
-      teamDiv.dataset.gameIndex = gameIndex;
-      // 🔁 Swap icon
-      const swapIcon = document.createElement('div');
-      swapIcon.className = 'swap-icon';
-      swapIcon.innerHTML = '🔁';
-      teamDiv.appendChild(swapIcon);
-      // 👥 Add player buttons
-      const teamPairs = teamSide === 'L' ? game.pair1 : game.pair2;
-      teamPairs.forEach((p, i) => {
-        teamDiv.appendChild(makePlayerButton(p, teamSide, gameIndex, i, data, index));
-      });
-      // ✅ Swap logic (only for latest round)
-      const isLatestRound = index === allRounds.length - 1;
-      if (isLatestRound) {
-        swapIcon.addEventListener('click', (e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          if (window.selectedTeam) {
-            const src = window.selectedTeam;
-            if (src.gameIndex !== gameIndex) {
-              handleTeamSwapAcrossCourts(src, { teamSide, gameIndex }, data, index);
-            }
-            window.selectedTeam = null;
-            document
-              .querySelectorAll('.selected-team')
-              .forEach(b => b.classList.remove('selected-team'));
-          } else {
-            window.selectedTeam = { teamSide, gameIndex };
-            teamDiv.classList.add('selected-team');
-          }
-        });
-      }
-      return teamDiv;
-    };
-    // 🟢 Create left & right sides
-    const team1 = makeTeamDiv('L');
-    const team2 = makeTeamDiv('R');
-    // ⚪ VS label
-    const vs = document.createElement('span');
-    vs.className = 'vs';
-    vs.innerText = '  ';
-    // Add everything to container
-    teamsDiv.append(team1, vs, team2);
-    // 🔑 wrap teams inside courtcard
-courtDiv.appendChild(teamsDiv);
-
-// 🔑 add courtcard to wrapper
-wrapper.appendChild(courtDiv);
-    //wrapper.appendChild(teamsDiv);
-  });
   return wrapper;
 }
 
@@ -1019,7 +939,7 @@ if (IS_MIXED_SESSION && player?.gender) {
   };
 
   btn.addEventListener('click', handleTap);
-  btn.addEventListener('touchstart', handleTap);
+  //btn.addEventListener('touchstart', handleTap);
 
   return btn;
 }
@@ -1096,7 +1016,7 @@ function makeRestButton(player, data, index) {
   };
 
   btn.addEventListener('click', handleTap);
-  btn.addEventListener('touchstart', handleTap);
+  //btn.addEventListener('touchstart', handleTap);
 
   return btn;
 }
@@ -1313,5 +1233,3 @@ lockBtn.addEventListener('click', () => {
   // Update icon text
   lockBtn.textContent = interactionLocked ? '🔒' : '🔓';
 });
-
-

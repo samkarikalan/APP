@@ -169,29 +169,40 @@
     <span class="lock-icon" id="lockToggleBtn">🔒</span>
     <!-- Timer Icon -->
     <div class="timer-card">
-  <button id="timerToggleBtn" class="row-label timer-toggle-btn" onclick="toggleTimer()">⏱️</button>
+      <button id="timerToggleBtn" class="row-label timer-toggle-btn" onclick="toggleTimer()">⏱️</button>
 
-  <button class="circle-btn" id="timerMinus">−</button>
-  <span class="timer-display" id="timerDisplay">08:00</span>
-  <button class="circle-btn" id="timerPlus">+</button>
-</div>
-
-
-
-
-</div>  
-  <div class="round-navigation">
-    <button id="prevBtn" onclick="prevRound()" disabled>
-      <span class="icon">◀</span>
-      <span data-i18n="pround">Previous</span>
-    </button>
-    <button id="roundTitle2" onclick="RefreshRound()">⟳</button>
-    <button id="nextBtn" onclick="nextRound()" disabled>      
-      <span data-i18n="nround">Next</span>
-      <span class="icon">▶</span>
-    </button>   
+      <button class="circle-btn" id="timerMinus">−</button>
+      <span class="timer-display" id="timerDisplay">08:00</span>
+      <button class="circle-btn" id="timerPlus">+</button>
+    </div>
   </div>
-</div>
+  
+  <div class="round-navigation">
+     <button
+          id="endBtn"
+          class="right danger"
+          onclick="endRounds()"          
+        >
+        <span data-i18n="endrounds">Next</span>
+          <span class="icon">🏁</span>
+    </button>     
+    <button class="left small" id="roundTitle2" onclick="RefreshRound()">⟳</button>
+    <button
+          id="nextBtn"
+          class="center primary"
+          onclick="nextRound()"          
+          >
+          <span data-i18n="nround">Next</span>
+          <span class="icon">▶</span>
+    </button>
+      
+  </div>  
+  
+ </div>   
+
+
+
+
 
 
 

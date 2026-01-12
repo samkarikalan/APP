@@ -1,39 +1,17 @@
 /* Each match container */
-.courtcard {
+.teams {
   display: flex;
   background: white;
-  
   position: relative;
   width: 95%;
   border-radius: 1rem;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   margin: 1rem auto;
-  padding: 1px 5px 5px ;
-  text-align: center;
-  font-weight: bold;
-  flex-direction: column; /* 🔑 this fixes it */
-}
-.courtname {
-  text-align: center;
-  margin: 2px ;
-  font-weight: 50;
-  font-size:12px;
-}
-.teams {
-  display: flex;
-  background:none;
-  position: relative;
-  width: 100%;
-  border-radius: 1rem;
-  overflow: hidden;  
-  
-  padding: 5px;
-  box-sizing: border-box;
+  padding: 0.25rem;
   text-align: center;
   font-weight: bold;
 }
-
 /* Left side â€“ Blue team */
 .team[data-team-side="L"] {
   flex: 1;
@@ -44,7 +22,7 @@
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
-  
+  gap: 0.01rem;
   position: relative;
   box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.1);
   transition: 0.2s ease;
@@ -60,29 +38,11 @@
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
-  
+  gap: 0.01rem;
   position: relative;
   box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.1);
   transition: 0.2s ease;
   cursor: pointer;
-}
-.team[data-team-side="L"] {
-  background-color: #e3fdf0;
-  border-color: #90caf9;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-}
-.team[data-team-side="R"] {
-  background-color: #e3f2fd;
-  border-color: #90caf9;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-}
-.team button {
-  background: none;
-  color: black;
-  font-weight: 600;
-  border: none;
 }
 /* Thick vertical divider */
 .teams::before {
@@ -92,7 +52,7 @@
   bottom: 0;
   left: 50%;
   width: 0.25rem; /* line thickness */
-  background:none;
+  background: orange;
   transform: translateX(-50%);
   z-index: 1;
   opacity: 0.9;
@@ -120,7 +80,24 @@
   transform: scale(1.05);
 }
 
-
+.team[data-team-side="L"] {
+  background-color: #e3fdf0;
+  border-color: #90caf9;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+.team[data-team-side="R"] {
+  background-color: #e3f2fd;
+  border-color: #90caf9;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+.team button {
+  background: none;
+  color: black;
+  font-weight: 600;
+  border: none;
+}
 
 .vs {
   display: inline-block;
@@ -530,59 +507,122 @@ body.locked .swap-icon {
 
 }
 
-.round-navigation {
-  display: flex;
-  justify-content: space-between; /* 🔑 auto spacing */
-  align-items: center;
-  margin-top: 0.75rem;
-  padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #009ffd);
-  box-shadow: 0 0.1875rem 0.5rem rgba(0, 0, 0, 0.15);
-}
+/* ===== Action Bar Container ===== */
+.action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
 
-
-.round-navigation .center {
-  justify-self: center;
-  width: fit-content;
-  white-space: nowrap;
-}
-
-/* Navigation Buttons */
-.round-navigation button {
-  font-size: 15px;
-  background: #800080;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 20px;
-  color: white;
+  gap: 12px;
+
+  padding: 14px 16px;
+  background: linear-gradient(180deg, #0aa2ff, #0088e6);
+
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.25);
+  z-index: 100;
+}
+
+/* ===== Common Button Reset ===== */
+.action-bar button {
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
   cursor: pointer;
-  border-radius: 8px;
-  user-select: none;
-  transition: transform 0.15s ease, background 0.15s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-.round-navigation button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  transform: none;
-  pointer-events: none;
-}
-.round-navigation button:active {
+
+/* Tap feedback */
+.action-bar button:active {
   transform: scale(0.97);
 }
 
+/* ===== Rotate / Refresh Button ===== */
+.icon-btn {
+  width: 48px;
+  height: 48px;
 
-.primary:hover {
-  background: #f2f9ff;
+  background: #7b0fa2;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+
+  font-size: 20px;
 }
 
-.round-navigation button.danger {
-  background: #e53935 !important;
+/* ===== Primary Button ===== */
+.primary-btn {
+  flex: 1;
+  height: 56px;
+
+  background: #7b0fa2;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+
+  gap: 10px;
+  font-size: 18px;
+}
+
+/* ===== Danger Button ===== */
+.danger-btn {
+  width: 140px;
+  height: 56px;
+
+  background: #e53935;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.32);
+
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+/* ===== Icons ===== */
+.primary-btn .arrow {
+  font-size: 16px;
+}
+
+.danger-btn .flag {
+  font-size: 18px;
+}
+
+/* ===== Safe area for iPhone ===== */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .action-bar {
+    padding-bottom: calc(14px + env(safe-area-inset-bottom));
+  }
 }
 
 
 
+.round-navigation-card {
+  background: #ffffff;          /* White card background */
+  border-radius: 12px;          /* Rounded corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Soft shadow */  
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Space between title+buttons and refresh */  
+}
 
+/* Reuse your existing round-navigation inside the card */
+.round-navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg,  #009ffd);
+  
+  box-shadow: 0 0.1875rem 0.5rem rgba(0, 0, 0, 0.15);
+}
+/* Round title inside card */
 
 #roundTitle2 {
   width: 2rem !important;
@@ -618,14 +658,28 @@ body.locked .swap-icon {
   height: 2rem;
 
   border-radius: 0.5rem;
-  background-color: none;
+  background-color: #dce2a3;
 
   justify-content: center;
   align-items: center;
   text-align: center;
 }
 
-
+/* Navigation Buttons */
+.round-navigation button {
+  color: #fff;
+  background: #800080;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 20px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  user-select: none;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
 
 
 .round-navigation button:hover {

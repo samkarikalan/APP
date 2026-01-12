@@ -1,8 +1,9 @@
 function renderRounds() {
   const exportRoot = document.getElementById('export');
   exportRoot.innerHTML = '';
-
-  allRounds.slice(0, -1).forEach((data) =>  {
+  
+  allRounds.slice(0, -1).forEach((data) => {
+  //allRounds.forEach((data) => {
 
     /* ───────── Round Container ───────── */
     const roundDiv = document.createElement('div');

@@ -190,6 +190,25 @@ function nextRound() {
   }
   updateSummaryPageAccess()
 }
+function endRounds() {  
+	updSchedule(allRounds.length - 1, schedulerState); // pass schedulerState
+    const newRound = AischedulerNextRound(schedulerState); // do NOT wrap in []
+    allRounds.push(newRound);
+    currentRoundIndex = allRounds.length - 2;
+    showRound(currentRoundIndex);
+	
+	// pass schedulerState              
+	// Disable Next & Refresh
+  document.getElementById("nextBtn").disabled = true;
+  document.getElementById("roundTitle2").disabled = true;
+
+  // Optional: also disable End to prevent double-click
+  document.getElementById("endBtn").disabled = true;
+	updateSummaryPageAccess();
+	showPage('page3');
+
+	
+}
 function prevRound() {
   if (currentRoundIndex > 0) {
     currentRoundIndex--;
