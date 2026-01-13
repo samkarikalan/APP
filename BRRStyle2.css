@@ -710,6 +710,36 @@ body.locked .swap-icon {
   opacity: 1;
 }
 
+.finish-card {
+  width: 100%;
+  max-width: 340px;
+  margin: 8px auto 0;
+  border-radius: 14px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+  overflow: hidden;
+}
+
+.finish-btn {
+  width: 100%;
+  padding: 14px 0;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(135deg, #ff4d4d, #d90000);
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.finish-btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+.finish-btn .icon {
+  margin-left: 6px;
+}
+
 
 .card {
   position: relative; /* Keep this */
