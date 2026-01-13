@@ -189,6 +189,7 @@ function resetRounds() {
   clearPreviousRound();
   goToRounds();
   report(); 
+  sessionFinished = false;
   document.getElementById("nextBtn").disabled = false;
   document.getElementById("roundTitle2").disabled = false;
 
