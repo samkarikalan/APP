@@ -698,22 +698,22 @@ body.locked .swap-icon {
 /* LEFT – secondary (Shuffle) */
 .action.left {
   flex: 1.5;
-  background: #475569; /* slate gray */
+  background: #72204a; /* slate gray */
   opacity: 0.9;
   border-right: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 /* MID – icon / neutral action */
 .action.mid {
-  flex: 0.3;
+  flex: 0.5;
   font-size: 26px;
-  background: #1e293b; /* deep neutral */
+  background: #000000; /* deep neutral */
 }
 
 /* RIGHT – primary (Next) */
 .action.right {
   flex: 1.5;
-  background: #2563eb; /* professional blue */
+  background: #50679b; /* professional blue */
 }
 
 .finish-card {

@@ -329,8 +329,8 @@ function createPlayerCard(player, index) {
 }
 
 function editPlayerName(index) {
-  const player = schedulerState.allPlayers[index];
-  const oldName = player.name;
+  const oldPlayer = schedulerState.allPlayers[index];
+  const oldName = oldPlayer.name;
 
   const newName = prompt("Edit player name", oldName);
   if (!newName) return;
@@ -338,7 +338,6 @@ function editPlayerName(index) {
   const trimmed = newName.trim();
   if (!trimmed) return;
 
-  // 🚫 Duplicate check
   const duplicate = schedulerState.allPlayers.some(
     (p, i) =>
       i !== index &&
@@ -350,7 +349,11 @@ function editPlayerName(index) {
     return;
   }
 
-  player.name = trimmed;
+  // ✅ immutable update
+  schedulerState.allPlayers = schedulerState.allPlayers.map((p, i) =>
+    i === index ? { ...p, name: trimmed } : p
+  );
+
   updatePlayerList();
 }
 
@@ -482,6 +485,15 @@ function updatePlayerList() {
     const card = createPlayerCard(player, index);
     container.appendChild(card);
   });
+  // Recalculate active players list
+  schedulerState.activeplayers = schedulerState.allPlayers
+    .filter(p => p.active)
+    .map(p => p.name)
+	.reverse();
+
+  // Refresh UI
+  updateFixedPairSelectors();
+	
   updateCourtButtons()
   updateRoundsPageAccess(); 	
 }
