@@ -191,7 +191,7 @@ function resetRounds() {
   report(); 
   sessionFinished = false;
   document.getElementById("nextBtn").disabled = false;
-  document.getElementById("roundTitle2").disabled = false;
+  document.getElementById("roundShufle").disabled = false;
 
   // Optional: also disable End to prevent double-click
   document.getElementById("endBtn").disabled = false;

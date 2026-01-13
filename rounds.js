@@ -202,7 +202,7 @@ function endRounds() {
 	// pass schedulerState              
 	// Disable Next & Refresh
   document.getElementById("nextBtn").disabled = true;
-  document.getElementById("roundTitle2").disabled = true;
+  document.getElementById("roundShufle").disabled = true;
 
   // Optional: also disable End to prevent double-click
   document.getElementById("endBtn").disabled = true;
