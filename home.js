@@ -189,6 +189,12 @@ function resetRounds() {
   clearPreviousRound();
   goToRounds();
   report(); 
+  document.getElementById("nextBtn").disabled = false;
+  document.getElementById("roundTitle2").disabled = false;
+
+  // Optional: also disable End to prevent double-click
+  document.getElementById("endBtn").disabled = false;
+	
   const btn = document.getElementById("reset_rounds_btn");
   if (btn) {
     btn.classList.remove("active");
