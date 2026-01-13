@@ -198,13 +198,13 @@
   
   <div class="round-navigation">
      <button
-          id="endBtn"
-          class="right danger"
-          onclick="endRounds()"          
-        >
-        <span data-i18n="endrounds">Next</span>
-          <span class="icon">🏁</span>
-    </button>     
+  id="endBtn"
+  class="right danger"
+  onclick="showConfirm('endRoundsConfirm', endRounds)"
+>
+  <span data-i18n="endrounds">Next</span>
+  <span class="icon">🏁</span>
+</button>   
     <button class="left small" id="roundTitle2" onclick="RefreshRound()">⟳</button>
     <button
           id="nextBtn"
