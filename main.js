@@ -1,3 +1,4 @@
+let sessionFinished = false;
 let lastPage = null;
 
 function isPageVisible(pageId) {
