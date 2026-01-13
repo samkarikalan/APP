@@ -178,6 +178,7 @@ function goBack() {
 }
 
 function nextRound() {
+  
   if (currentRoundIndex + 1 < allRounds.length) {
     currentRoundIndex++;
     showRound(currentRoundIndex);
@@ -191,6 +192,7 @@ function nextRound() {
   updateSummaryPageAccess()
 }
 function endRounds() {  
+	sessionFinished = true;
 	updSchedule(allRounds.length - 1, schedulerState); // pass schedulerState
     const newRound = AischedulerNextRound(schedulerState); // do NOT wrap in []
     allRounds.push(newRound);
