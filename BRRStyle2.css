@@ -668,75 +668,62 @@ body.locked .swap-icon {
   transform: scale(1.05);
 }
 
-.action-card {
-  display: flex;
-  width: 98%;  
-  margin: 5px;  
+/* ========== SHARED CARD BASE ========== */
+.action-card,
+.finish-card {
+  width: 98%;
+  margin: 5px auto;
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 6px 16px rgba(0,0,0,0.18);
 }
 
-/* base button */
-.action {
-  padding: 8px 0;
-  border: none;
-  font-size: 18px;
-  font-weight: 600;
-  color: #fff;
-  cursor: pointer;
-  transition: transform 0.1s ease, opacity 0.1s ease;
+/* Action card layout */
+.action-card {
+  display: flex;
 }
 
-/* touch feedback */
-.action:active {
-  transform: scale(0.97);
-  opacity: 0.9;
-}
-
-/* LEFT – secondary (Shuffle) */
-.action.left { flex: 0.2; /* smaller */ 
-  background: linear-gradient(135deg, #ff9a3c, #ff6a00); 
-  opacity: 0.88; /* visually secondary */ 
-  border-right: 1px solid rgba(255,255,255,0.18); 
-}
-
-/* RIGHT – primary (Next) */
-.action.right {
-  flex: 1.1;                        /* larger */
-  background: linear-gradient(135deg, #4facfe, #00c6ff);
-  opacity: 1;
-}
-
-.finish-card {
- width: 98%;  
-  margin: 1px auto;
-  border-radius: 14px;  
-  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
-  overflow: hidden;
-}
-
+/* ========== SHARED BUTTON BASE ========== */
+.action,
 .finish-btn {
-  width: 100%;
   padding: 8px 0;
   border: none;
   font-size: 18px;
   font-weight: 600;
   color: #fff;
   cursor: pointer;
-  background: linear-gradient(135deg, #ff4d4d, #d90000);
   transition: transform 0.1s ease, opacity 0.1s ease;
 }
 
+/* Touch feedback */
+.action:active,
 .finish-btn:active {
   transform: scale(0.97);
   opacity: 0.9;
 }
 
+/* ========== ACTION CARD BUTTONS ========== */
+.action.left {
+  flex: 0.2;
+  background: linear-gradient(135deg, #ff9a3c, #ff6a00);
+  opacity: 0.88;
+  border-right: 1px solid rgba(255,255,255,0.18);
+}
+
+.action.right {
+  flex: 1.1;
+  background: linear-gradient(135deg, #4facfe, #00c6ff);
+}
+
+/* ========== FINISH CARD BUTTON ========== */
+.finish-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #ff4d4d, #d90000);
+}
+
 .finish-btn .icon {
   margin-left: 6px;
 }
-
 
 .card {
   position: relative; /* Keep this */
