@@ -671,7 +671,7 @@ body.locked .swap-icon {
 .action-card {
   display: flex;
   width: 98%;  
-  margin: 12px auto;
+  margin: 5px;  
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 6px 16px rgba(0,0,0,0.18);
@@ -710,7 +710,7 @@ body.locked .swap-icon {
 
 .finish-card {
  width: 98%;  
-  margin: 12px auto;
+  margin: 1px auto;
   border-radius: 14px;  
   box-shadow: 0 6px 16px rgba(0,0,0,0.18);
   overflow: hidden;
