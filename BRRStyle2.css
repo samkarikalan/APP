@@ -668,6 +668,49 @@ body.locked .swap-icon {
   transform: scale(1.05);
 }
 
+.action-card {
+  display: flex;
+  width: 100%;
+  max-width: 340px;
+  margin: 12px auto;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+}
+
+/* base button */
+.action {
+  padding: 15px 0;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+/* touch feedback */
+.action:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+/* LEFT – secondary (Shuffle) */
+.action.left {
+  flex: 0.9;                        /* smaller */
+  background: linear-gradient(135deg, #ff9a3c, #ff6a00);
+  opacity: 0.88;                    /* visually secondary */
+  border-right: 1px solid rgba(255,255,255,0.18);
+}
+
+/* RIGHT – primary (Next) */
+.action.right {
+  flex: 1.1;                        /* larger */
+  background: linear-gradient(135deg, #4facfe, #00c6ff);
+  opacity: 1;
+}
+
+
 .card {
   position: relative; /* Keep this */
 }
