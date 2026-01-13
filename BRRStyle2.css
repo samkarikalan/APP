@@ -670,8 +670,7 @@ body.locked .swap-icon {
 
 .action-card {
   display: flex;
-  width: 100%;
-  max-width: 340px;
+  width: 98%;  
   margin: 12px auto;
   border-radius: 14px;
   overflow: hidden;
@@ -680,9 +679,9 @@ body.locked .swap-icon {
 
 /* base button */
 .action {
-  padding: 15px 0;
+  padding: 8px 0;
   border: none;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
   color: #fff;
   cursor: pointer;
@@ -710,19 +709,18 @@ body.locked .swap-icon {
 }
 
 .finish-card {
-  width: 100%;
-  max-width: 340px;
-  margin: 8px auto 0;
-  border-radius: 14px;
+ width: 98%;  
+  margin: 12px auto;
+  border-radius: 14px;  
   box-shadow: 0 6px 16px rgba(0,0,0,0.18);
   overflow: hidden;
 }
 
 .finish-btn {
   width: 100%;
-  padding: 14px 0;
+  padding: 8px 0;
   border: none;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
   color: #fff;
   cursor: pointer;
