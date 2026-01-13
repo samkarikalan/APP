@@ -279,9 +279,106 @@ PLAYER MANAGEMENT
  
 ========================= */
 
-
-
 function createPlayerCard(player, index) {
+  let cardClass = `player-edit-card player-row ${player.gender.toLowerCase()}`;
+  if (!player.active) cardClass += " inactive";
+
+  const card = document.createElement("div");
+  card.className = cardClass;
+
+  // 🔹 Drag support
+  card.draggable = true;
+  card.dataset.index = index;
+  card.addEventListener("dragstart", onDragStart);
+  card.addEventListener("dragover", onDragOver);
+  card.addEventListener("drop", onDrop);
+
+  const genderIcon =
+    player.gender === "Male" ? "👨‍💼" :
+    player.gender === "Female" ? "🙎‍♀️" :
+    "❔";
+
+  card.innerHTML = `
+    <div class="pec-col pec-active">
+      <input type="checkbox"
+        ${player.active ? "checked" : ""}
+        onchange="toggleActive(${index}, this)">
+    </div>
+
+    <div class="pec-col pec-sl">${index + 1}</div>
+
+    <div class="pec-col pec-gender">
+      <span class="gender-icon ${player.gender.toLowerCase()}"
+            onclick="toggleGender(${index}, this)">
+        ${genderIcon}
+      </span>
+    </div>
+
+    <div class="pec-col pec-name"
+         onclick="editPlayerName(${index})">
+      ${player.name}
+    </div>
+
+    <div class="pec-col pec-delete">
+      <button class="pec-btn delete"
+              onclick="deletePlayer(${index})">🗑</button>
+    </div>
+  `;
+
+  return card;
+}
+
+function editPlayerName(index) {
+  const player = schedulerState.allPlayers[index];
+  const oldName = player.name;
+
+  const newName = prompt("Edit player name", oldName);
+  if (!newName) return;
+
+  const trimmed = newName.trim();
+  if (!trimmed) return;
+
+  // 🚫 Duplicate check
+  const duplicate = schedulerState.allPlayers.some(
+    (p, i) =>
+      i !== index &&
+      p.name.toLowerCase() === trimmed.toLowerCase()
+  );
+
+  if (duplicate) {
+    alert("Player name already exists!");
+    return;
+  }
+
+  player.name = trimmed;
+  updatePlayerList();
+}
+
+let draggedIndex = null;
+
+function onDragStart(e) {
+  draggedIndex = Number(e.currentTarget.dataset.index);
+  e.dataTransfer.effectAllowed = "move";
+}
+
+function onDragOver(e) {
+  e.preventDefault(); // Allow drop
+}
+
+function onDrop(e) {
+  const targetIndex = Number(e.currentTarget.dataset.index);
+  if (draggedIndex === targetIndex) return;
+
+  const list = schedulerState.allPlayers;
+  const [moved] = list.splice(draggedIndex, 1);
+  list.splice(targetIndex, 0, moved);
+
+  updatePlayerList();
+}
+
+
+
+function xxxcreatePlayerCard(player, index) {
   // Base card class + gender
   let cardClass = `player-edit-card player-row ${player.gender.toLowerCase()}`;
   
