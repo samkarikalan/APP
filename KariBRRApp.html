@@ -195,27 +195,43 @@
       <button class="circle-btn" id="timerPlus">+</button>
     </div>
   </div>
+
+  <div class="action-card">
+  <!-- LEFT : Mix / Refresh (secondary) -->
+  <button
+    class="action left small"
+    id="roundTitle2"
+    onclick="RefreshRound()"
+    aria-label="Mix round"
+  >
+    ⟳ Mix
+  </button>
+
+  <!-- RIGHT : Next (primary) -->
+  <button
+    id="nextBtn"
+    class="action right primary"
+    onclick="nextRound()"
+  >
+    <span data-i18n="nround">Next</span>
+    <span class="icon">▶</span>
+  </button>
+</div>
+<div class="finish-card">
+  <button
+    id="endBtn"
+    class="finish-btn danger"
+    onclick="showConfirm('endRoundsConfirm', endRounds)"
+  >
+    <span data-i18n="endrounds">Finish</span>
+    <span class="icon">🏁</span>
+  </button>
+</div>
+
   
-  <div class="round-navigation">
-     <button
-  id="endBtn"
-  class="right danger"
-  onclick="showConfirm('endRoundsConfirm', endRounds)"
->
-  <span data-i18n="endrounds">Next</span>
-  <span class="icon">🏁</span>
-</button>   
-    <button class="left small" id="roundTitle2" onclick="RefreshRound()">⟳</button>
-    <button
-          id="nextBtn"
-          class="center primary"
-          onclick="nextRound()"          
-          >
-          <span data-i18n="nround">Next</span>
-          <span class="icon">▶</span>
-    </button>
-      
-  </div>  
+  
+
+    
   
  </div>   
 
