@@ -91,12 +91,20 @@
     </div>
 
     <!-- Reset -->
+    <!-- Reset -->
     <div class="settings-card card-reset">
       <div class="sec" data-i18n="reset"></div>
       <div class="row">
-        <div class="btn danger" onclick="ResetAll()" data-i18n="resetAll"></div>
-        <div class="btn warn" onclick="resetRounds()" data-i18n="resetExcept"></div>
-      </div>
+        <div class="btn danger"
+           onclick="showConfirm('confirmResetAll', ResetAll)"
+           data-i18n="resetAll">
+        </div>
+
+        <div class="btn warn"
+           onclick="showConfirm('confirmResetGames', resetRounds)"
+           data-i18n="resetExcept">
+        </div>
+       </div>
     </div>
 
         <!-- Export / Save -->
@@ -113,6 +121,17 @@
   </div>
 </div>
 
+
+<div id="confirmOverlay" class="confirm-overlay hidden">
+  <div class="confirm-box">
+    <div class="confirm-title" id="confirmTitle"></div>
+
+    <div class="confirm-actions">
+      <button class="btn cancel" id="confirmCancel"></button>
+      <button class="btn danger" id="confirmYes"></button>
+    </div>
+  </div>
+</div>  
 <!--           PAGE 1              -->
 <!--         Players Page          -->
 <!-- ============================= -->
