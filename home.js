@@ -1,3 +1,37 @@
+let pendingAction = null;
+
+function t(key) {
+  return translations[currentLang]?.[key] || key;
+}
+
+function showConfirm(messageKey, action) {
+  const overlay = document.getElementById("confirmOverlay");
+  const title   = document.getElementById("confirmTitle");
+  const yesBtn  = document.getElementById("confirmYes");
+  const cancelBtn = document.getElementById("confirmCancel");
+
+  title.textContent = t(messageKey);
+  yesBtn.textContent = t("yes");
+  cancelBtn.textContent = t("cancel");
+
+  pendingAction = action;
+  overlay.classList.remove("hidden");
+
+  // ✅ YES button
+  yesBtn.onclick = () => {
+    pendingAction && pendingAction();
+    closeConfirm();
+  };
+
+  // ✅ CANCEL button (THIS enables it)
+  cancelBtn.onclick = closeConfirm;
+}
+
+function closeConfirm() {
+  document.getElementById("confirmOverlay").classList.add("hidden");
+  pendingAction = null;
+}
+
 
 let currentLang = "en";
 
