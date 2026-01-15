@@ -1,3 +1,228 @@
+function scheduleFixedPairsRoundRobin({ fixedPairs, numCourts, roundIndex }) {
+  if (!fixedPairs || fixedPairs.length < 2) {
+    return { games: [], byePlayers: [] };
+  }
+
+  let pairs = fixedPairs.map(p => [...p]);
+
+  // Ghost pair if odd
+  const hasBye = pairs.length % 2 === 1;
+  if (hasBye) pairs.push(null);
+
+  const n = pairs.length;
+
+  const fixed = pairs[0];
+  let rotating = pairs.slice(1);
+
+  const r = roundIndex % (n - 1);
+  for (let i = 0; i < r; i++) {
+    rotating.push(rotating.shift());
+  }
+
+  const arranged = [fixed, ...rotating];
+
+  const games = [];
+  let byePlayers = [];
+
+  for (let i = 0; i < n / 2; i++) {
+    const a = arranged[i];
+    const b = arranged[n - 1 - i];
+
+    if (a === null) byePlayers = b;
+    else if (b === null) byePlayers = a;
+    else games.push({ pair1: a, pair2: b });
+  }
+
+  return {
+    games: games.slice(0, numCourts),
+    byePlayers
+  };
+}
+
+function AischedulerNextRound(schedulerState) {
+  const {
+    activeplayers,
+    numCourts,
+    fixedPairs,
+    restCount,
+    opponentMap,
+    lastRound // 🔴 ADDED (fixes existing bug)
+  } = schedulerState;
+
+  const totalPlayers = activeplayers.length;
+  const numPlayersPerRound = numCourts * 4;
+  const numResting = Math.max(totalPlayers - numPlayersPerRound, 0);
+
+  const fixedPairPlayers = new Set(fixedPairs.flat());
+  let freePlayers = activeplayers.filter(p => !fixedPairPlayers.has(p));
+
+  let resting = [];
+  let playing = [];
+
+  // ---------------- REST LOGIC (UNCHANGED) ----------------
+  if (fixedPairs.length > 0 && numResting >= 2) {
+    let needed = numResting;
+    const fixedMap = new Map();
+    for (const [a, b] of fixedPairs) {
+      fixedMap.set(a, b);
+      fixedMap.set(b, a);
+    }
+
+    for (const p of schedulerState.restQueue) {
+      if (resting.includes(p)) continue;
+
+      const partner = fixedMap.get(p);
+
+      if (partner) {
+        if (needed >= 2) {
+          resting.push(p, partner);
+          needed -= 2;
+        }
+      } else {
+        if (needed > 0) {
+          resting.push(p);
+          needed -= 1;
+        }
+      }
+
+      if (needed <= 0) break;
+    }
+
+    playing = activeplayers.filter(p => !resting.includes(p));
+  } else {
+    const sortedPlayers = [...schedulerState.restQueue];
+    resting = sortedPlayers.slice(0, numResting);
+    playing = activeplayers
+      .filter(p => !resting.includes(p))
+      .slice(0, numPlayersPerRound);
+  }
+
+  // ---------------- PAIR PREP ----------------
+  const playingSet = new Set(playing);
+  let fixedPairsThisRound = [];
+  for (const pair of fixedPairs) {
+    if (playingSet.has(pair[0]) && playingSet.has(pair[1])) {
+      fixedPairsThisRound.push([pair[0], pair[1]]);
+    }
+  }
+
+  const fixedPairPlayersThisRound = new Set(fixedPairsThisRound.flat());
+  let freePlayersThisRound = playing.filter(
+    p => !fixedPairPlayersThisRound.has(p)
+  );
+
+  freePlayersThisRound = reorderFreePlayersByLastRound(
+    freePlayersThisRound,
+    lastRound,
+    numCourts
+  );
+
+  // 🔴 ADDED — ALL FIXED PAIRS DETECTION
+  const allFixed =
+    freePlayersThisRound.length === 0 &&
+    fixedPairsThisRound.length >= numCourts * 2;
+
+  // 🔴 ADDED — ROUND ROBIN PATH (EARLY RETURN)
+  if (allFixed) {
+    const { games, byePlayers } = scheduleFixedPairsRoundRobin({
+      fixedPairs: fixedPairsThisRound,
+      numCourts,
+      roundIndex: schedulerState.roundIndex || 0
+    });
+
+    if (byePlayers.length) {
+      resting.push(...byePlayers);
+      playing = playing.filter(p => !byePlayers.includes(p));
+    }
+
+    schedulerState.roundIndex =
+      (schedulerState.roundIndex || 0) + 1;
+
+    return {
+      round: schedulerState.roundIndex,
+      resting: resting.map(p => {
+        const c = restCount.get(p) || 0;
+        return `${p}#${c + 1}`;
+      }),
+      playing,
+      games: games.map((g, i) => ({
+        court: i + 1,
+        pair1: [...g.pair1],
+        pair2: [...g.pair2]
+      }))
+    };
+  }
+
+  // ---------------- YOUR EXISTING LOGIC CONTINUES ----------------
+  const requiredPairsCount = Math.floor(numPlayersPerRound / 2);
+  let neededFreePairs = requiredPairsCount - fixedPairsThisRound.length;
+
+  let selectedPairs = findDisjointPairs(
+    freePlayersThisRound,
+    schedulerState.pairPlayedSet,
+    neededFreePairs,
+    opponentMap
+  );
+
+  let finalFreePairs = selectedPairs || [];
+
+  if (finalFreePairs.length < neededFreePairs) {
+    const free = freePlayersThisRound.slice();
+    const usedPlayers = new Set(finalFreePairs.flat());
+    for (let i = 0; i < free.length; i++) {
+      const a = free[i];
+      if (usedPlayers.has(a)) continue;
+      for (let j = i + 1; j < free.length; j++) {
+        const b = free[j];
+        if (usedPlayers.has(b)) continue;
+        finalFreePairs.push([a, b]);
+        usedPlayers.add(a);
+        usedPlayers.add(b);
+        break;
+      }
+      if (finalFreePairs.length >= neededFreePairs) break;
+    }
+  }
+
+  let allPairs = fixedPairsThisRound.concat(finalFreePairs);
+  allPairs = shuffle(allPairs);
+
+  let matchupScores = getMatchupScores(allPairs, opponentMap);
+  const games = [];
+  const usedPairs = new Set();
+
+  for (const match of matchupScores) {
+    const { pair1, pair2 } = match;
+    const p1Key = pair1.join("&");
+    const p2Key = pair2.join("&");
+    if (usedPairs.has(p1Key) || usedPairs.has(p2Key)) continue;
+    games.push({
+      court: games.length + 1,
+      pair1: [...pair1],
+      pair2: [...pair2]
+    });
+    usedPairs.add(p1Key);
+    usedPairs.add(p2Key);
+    if (games.length >= numCourts) break;
+  }
+
+  const restingWithNumber = resting.map(p => {
+    const currentRest = restCount.get(p) || 0;
+    return `${p}#${currentRest + 1}`;
+  });
+
+  schedulerState.roundIndex =
+    (schedulerState.roundIndex || 0) + 1;
+
+  return {
+    round: schedulerState.roundIndex,
+    resting: restingWithNumber,
+    playing,
+    games
+  };
+}
+
+
 
 // ==============================
 // Generate next round (no global updates)
@@ -121,7 +346,7 @@ function betaAischedulerNextRound(schedulerState) {
 
 
 
-function AischedulerNextRound(schedulerState) {
+function backupAischedulerNextRound(schedulerState) {
   const {
     activeplayers,
     numCourts,
