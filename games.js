@@ -1,16 +1,23 @@
-function scheduleFixedPairsRoundRobin({ fixedPairs, numCourts, roundIndex }) {
+function scheduleFixedPairsRoundRobin({
+  fixedPairs,
+  numCourts,
+  roundIndex
+}) {
   if (!fixedPairs || fixedPairs.length < 2) {
     return { games: [], byePlayers: [] };
   }
 
+  // clone to avoid mutation
   let pairs = fixedPairs.map(p => [...p]);
 
-  // Ghost pair if odd
-  const hasBye = pairs.length % 2 === 1;
-  if (hasBye) pairs.push(null);
+  // ghost pair if odd
+  if (pairs.length % 2 === 1) {
+    pairs.push(null);
+  }
 
   const n = pairs.length;
 
+  // circle method
   const fixed = pairs[0];
   let rotating = pairs.slice(1);
 
@@ -46,7 +53,7 @@ function AischedulerNextRound(schedulerState) {
     fixedPairs,
     restCount,
     opponentMap,
-    lastRound // 🔴 ADDED (fixes existing bug)
+    lastRound
   } = schedulerState;
 
   const totalPlayers = activeplayers.length;
@@ -117,18 +124,21 @@ function AischedulerNextRound(schedulerState) {
     numCourts
   );
 
-  // 🔴 ADDED — ALL FIXED PAIRS DETECTION
+  // ---------------- 🔴 ALL FIXED PAIRS DETECTION ----------------
   const allFixed =
     freePlayersThisRound.length === 0 &&
-    fixedPairsThisRound.length >= numCourts * 2;
+    fixedPairs.length >= numCourts * 2;
 
-  // 🔴 ADDED — ROUND ROBIN PATH (EARLY RETURN)
+  // ---------------- 🔴 ROUND ROBIN FIX ----------------
   if (allFixed) {
     const { games, byePlayers } = scheduleFixedPairsRoundRobin({
-      fixedPairs: fixedPairsThisRound,
+      fixedPairs, // ✅ FULL SET (critical fix)
       numCourts,
-      roundIndex: schedulerState.roundIndex || 0
+      roundIndex: schedulerState.fixedPairRound || 0
     });
+
+    schedulerState.fixedPairRound =
+      (schedulerState.fixedPairRound || 0) + 1;
 
     if (byePlayers.length) {
       resting.push(...byePlayers);
@@ -153,7 +163,7 @@ function AischedulerNextRound(schedulerState) {
     };
   }
 
-  // ---------------- YOUR EXISTING LOGIC CONTINUES ----------------
+  // ---------------- ORIGINAL LOGIC CONTINUES (UNCHANGED) ----------------
   const requiredPairsCount = Math.floor(numPlayersPerRound / 2);
   let neededFreePairs = requiredPairsCount - fixedPairsThisRound.length;
 
