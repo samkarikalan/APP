@@ -1,45 +1,57 @@
-function scheduleFixedPairsRoundRobin({
-  fixedPairs,
-  numCourts,
-  roundIndex
-}) {
-  if (!fixedPairs || fixedPairs.length < 2) {
-    return { games: [], byePlayers: [] };
+function getNextFixedPairGames(schedulerState, fixedPairs, numCourts) {
+  const hash = JSON.stringify(fixedPairs);
+
+  // Initialize or rebuild queue if fixed pairs changed
+  if (
+    !schedulerState.fixedPairGameQueue ||
+    schedulerState.fixedPairGameQueueHash !== hash
+  ) {
+    schedulerState.fixedPairGameQueueHash = hash;
+    schedulerState.fixedPairGameQueue = [];
+
+    // Generate ALL unique pair-vs-pair games
+    for (let i = 0; i < fixedPairs.length; i++) {
+      for (let j = i + 1; j < fixedPairs.length; j++) {
+        schedulerState.fixedPairGameQueue.push({
+          pair1: fixedPairs[i],
+          pair2: fixedPairs[j],
+        });
+      }
+    }
+
+    // Optional shuffle for fairness
+    schedulerState.fixedPairGameQueue = shuffle(
+      schedulerState.fixedPairGameQueue
+    );
   }
-
-  let pairs = fixedPairs.map(p => [...p]);
-
-  // ghost pair for odd count
-  if (pairs.length % 2 === 1) pairs.push(null);
-
-  const n = pairs.length;
-
-  const fixed = pairs[0];
-  let rotating = pairs.slice(1);
-
-  const r = roundIndex % (n - 1);
-  for (let i = 0; i < r; i++) {
-    rotating.push(rotating.shift());
-  }
-
-  const arranged = [fixed, ...rotating];
 
   const games = [];
-  let byePlayers = [];
+  const usedPairs = new Set();
 
-  for (let i = 0; i < n / 2; i++) {
-    const a = arranged[i];
-    const b = arranged[n - 1 - i];
+  // Consume queue safely
+  while (
+    games.length < numCourts &&
+    schedulerState.fixedPairGameQueue.length > 0
+  ) {
+    const game = schedulerState.fixedPairGameQueue.shift();
 
-    if (a === null) byePlayers = b;
-    else if (b === null) byePlayers = a;
-    else games.push({ pair1: a, pair2: b });
+    const k1 = game.pair1.join("&");
+    const k2 = game.pair2.join("&");
+
+    // Prevent same pair playing twice in same round
+    if (usedPairs.has(k1) || usedPairs.has(k2)) continue;
+
+    games.push({
+      court: games.length + 1,
+      pair1: [...game.pair1],
+      pair2: [...game.pair2],
+    });
+
+    usedPairs.add(k1);
+    usedPairs.add(k2);
   }
 
-  return {
-    games: games.slice(0, numCourts),
-    byePlayers
-  };
+  return games;
 }
 
 function AischedulerNextRound(schedulerState) {
@@ -49,7 +61,7 @@ function AischedulerNextRound(schedulerState) {
     fixedPairs,
     restCount,
     opponentMap,
-    lastRound
+    lastRound,
   } = schedulerState;
 
   const totalPlayers = activeplayers.length;
@@ -62,7 +74,7 @@ function AischedulerNextRound(schedulerState) {
   let resting = [];
   let playing = [];
 
-  // ================= REST LOGIC (UNCHANGED) =================
+  // ================= REST SELECTION (UNCHANGED) =================
   if (fixedPairs.length > 0 && numResting >= 2) {
     let needed = numResting;
     const fixedMap = new Map();
@@ -75,17 +87,14 @@ function AischedulerNextRound(schedulerState) {
       if (resting.includes(p)) continue;
 
       const partner = fixedMap.get(p);
-
       if (partner) {
         if (needed >= 2) {
           resting.push(p, partner);
           needed -= 2;
         }
-      } else {
-        if (needed > 0) {
-          resting.push(p);
-          needed -= 1;
-        }
+      } else if (needed > 0) {
+        resting.push(p);
+        needed -= 1;
       }
 
       if (needed <= 0) break;
@@ -125,20 +134,20 @@ function AischedulerNextRound(schedulerState) {
     freePlayersThisRound.length === 0 &&
     fixedPairs.length >= numCourts * 2;
 
-  // ================= ROUND ROBIN OVERRIDE =================
+  // ================= ALL FIXED (QUEUE-BASED ROUND ROBIN) =================
   if (allFixed) {
-    const { games, byePlayers } = scheduleFixedPairsRoundRobin({
+    const games = getNextFixedPairGames(
+      schedulerState,
       fixedPairs,
-      numCourts,
-      roundIndex: schedulerState.fixedPairRound || 0
-    });
+      numCourts
+    );
 
-    schedulerState.fixedPairRound =
-      (schedulerState.fixedPairRound || 0) + 1;
+    const playingPlayers = new Set(
+      games.flatMap(g => [...g.pair1, ...g.pair2])
+    );
 
-    // 🔧 SINGLE SOURCE OF TRUTH FOR RESTING
-    resting = byePlayers.slice();
-    playing = activeplayers.filter(p => !resting.includes(p));
+    resting = activeplayers.filter(p => !playingPlayers.has(p));
+    playing = [...playingPlayers];
 
     schedulerState.roundIndex =
       (schedulerState.roundIndex || 0) + 1;
@@ -150,17 +159,14 @@ function AischedulerNextRound(schedulerState) {
         return `${p}#${c + 1}`;
       }),
       playing,
-      games: games.map((g, i) => ({
-        court: i + 1,
-        pair1: [...g.pair1],
-        pair2: [...g.pair2]
-      }))
+      games,
     };
   }
 
-  // ================= ORIGINAL LOGIC CONTINUES =================
+  // ================= ORIGINAL FREE-PAIR LOGIC =================
   const requiredPairsCount = Math.floor(numPlayersPerRound / 2);
-  let neededFreePairs = requiredPairsCount - fixedPairsThisRound.length;
+  let neededFreePairs =
+    requiredPairsCount - fixedPairsThisRound.length;
 
   let selectedPairs = findDisjointPairs(
     freePlayersThisRound,
@@ -174,17 +180,21 @@ function AischedulerNextRound(schedulerState) {
   if (finalFreePairs.length < neededFreePairs) {
     const free = freePlayersThisRound.slice();
     const usedPlayers = new Set(finalFreePairs.flat());
+
     for (let i = 0; i < free.length; i++) {
       const a = free[i];
       if (usedPlayers.has(a)) continue;
+
       for (let j = i + 1; j < free.length; j++) {
         const b = free[j];
         if (usedPlayers.has(b)) continue;
+
         finalFreePairs.push([a, b]);
         usedPlayers.add(a);
         usedPlayers.add(b);
         break;
       }
+
       if (finalFreePairs.length >= neededFreePairs) break;
     }
   }
@@ -200,20 +210,24 @@ function AischedulerNextRound(schedulerState) {
     const { pair1, pair2 } = match;
     const p1Key = pair1.join("&");
     const p2Key = pair2.join("&");
+
     if (usedPairs.has(p1Key) || usedPairs.has(p2Key)) continue;
+
     games.push({
       court: games.length + 1,
       pair1: [...pair1],
-      pair2: [...pair2]
+      pair2: [...pair2],
     });
+
     usedPairs.add(p1Key);
     usedPairs.add(p2Key);
+
     if (games.length >= numCourts) break;
   }
 
   const restingWithNumber = resting.map(p => {
-    const currentRest = restCount.get(p) || 0;
-    return `${p}#${currentRest + 1}`;
+    const c = restCount.get(p) || 0;
+    return `${p}#${c + 1}`;
   });
 
   schedulerState.roundIndex =
@@ -223,7 +237,7 @@ function AischedulerNextRound(schedulerState) {
     round: schedulerState.roundIndex,
     resting: restingWithNumber,
     playing,
-    games
+    games,
   };
 }
 
