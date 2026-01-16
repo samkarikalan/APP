@@ -79,10 +79,45 @@ function editPlayer(i, field, val) {
   updatePlayerList();
   updateFixedPairSelectors();  	
 }
+
+function removeFixedPairsForPlayer(playerName) {
+  // Remove from data
+  schedulerState.fixedPairs = schedulerState.fixedPairs.filter(pair => {
+    const keep = !pair.includes(playerName);
+    if (!keep) {
+      const key = pair.slice().sort().join("&");
+      removeFixedCard(key); // Remove UI card
+    }
+    return keep;
+  });
+
+  updateFixedPairSelectors();
+}
+
 /* =========================
    DELETE PLAYER
 ========================= */
 function deletePlayer(i) {
+  const deletedPlayer = schedulerState.allPlayers[i].name;
+
+  // Remove player
+  schedulerState.allPlayers.splice(i, 1);
+
+  // Remove any fixed pairs involving this player
+  removeFixedPairsForPlayer(deletedPlayer);
+
+  // Recalculate active players
+  schedulerState.activeplayers = schedulerState.allPlayers
+    .filter(p => p.active)
+    .map(p => p.name)
+    .reverse();
+
+  updatePlayerList();
+  updateFixedPairSelectors();
+}
+
+
+function olddeletePlayer(i) {
   schedulerState.allPlayers.splice(i, 1);
    schedulerState.activeplayers = schedulerState.allPlayers
     .filter(p => p.active)
