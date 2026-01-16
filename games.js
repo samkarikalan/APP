@@ -1,15 +1,16 @@
 function getNextFixedPairGames(schedulerState, fixedPairs, numCourts) {
   const hash = JSON.stringify(fixedPairs);
 
-  // Initialize or rebuild queue if fixed pairs changed
+  // 🔁 Initialize OR reset when queue is empty OR pairs changed
   if (
     !schedulerState.fixedPairGameQueue ||
+    schedulerState.fixedPairGameQueue.length === 0 ||
     schedulerState.fixedPairGameQueueHash !== hash
   ) {
     schedulerState.fixedPairGameQueueHash = hash;
     schedulerState.fixedPairGameQueue = [];
 
-    // Generate ALL unique pair-vs-pair games
+    // Generate ALL unique games (pair vs pair)
     for (let i = 0; i < fixedPairs.length; i++) {
       for (let j = i + 1; j < fixedPairs.length; j++) {
         schedulerState.fixedPairGameQueue.push({
@@ -19,7 +20,7 @@ function getNextFixedPairGames(schedulerState, fixedPairs, numCourts) {
       }
     }
 
-    // Optional shuffle for fairness
+    // Optional shuffle (recommended)
     schedulerState.fixedPairGameQueue = shuffle(
       schedulerState.fixedPairGameQueue
     );
@@ -27,20 +28,25 @@ function getNextFixedPairGames(schedulerState, fixedPairs, numCourts) {
 
   const games = [];
   const usedPairs = new Set();
+  const remainingGames = [];
 
-  // Consume queue safely
-  while (
-    games.length < numCourts &&
-    schedulerState.fixedPairGameQueue.length > 0
-  ) {
-    const game = schedulerState.fixedPairGameQueue.shift();
+  // 🎯 Select playable games, remove ONLY played ones
+  for (const game of schedulerState.fixedPairGameQueue) {
+    if (games.length >= numCourts) {
+      remainingGames.push(game);
+      continue;
+    }
 
     const k1 = game.pair1.join("&");
     const k2 = game.pair2.join("&");
 
-    // Prevent same pair playing twice in same round
-    if (usedPairs.has(k1) || usedPairs.has(k2)) continue;
+    if (usedPairs.has(k1) || usedPairs.has(k2)) {
+      // Not playable this round → keep it
+      remainingGames.push(game);
+      continue;
+    }
 
+    // ✅ Game is played → remove
     games.push({
       court: games.length + 1,
       pair1: [...game.pair1],
@@ -50,6 +56,9 @@ function getNextFixedPairGames(schedulerState, fixedPairs, numCourts) {
     usedPairs.add(k1);
     usedPairs.add(k2);
   }
+
+  // Update queue with unplayed games only
+  schedulerState.fixedPairGameQueue = remainingGames;
 
   return games;
 }
