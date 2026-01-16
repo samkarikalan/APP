@@ -7,17 +7,13 @@ function scheduleFixedPairsRoundRobin({
     return { games: [], byePlayers: [] };
   }
 
-  // clone to avoid mutation
   let pairs = fixedPairs.map(p => [...p]);
 
-  // ghost pair if odd
-  if (pairs.length % 2 === 1) {
-    pairs.push(null);
-  }
+  // ghost pair for odd count
+  if (pairs.length % 2 === 1) pairs.push(null);
 
   const n = pairs.length;
 
-  // circle method
   const fixed = pairs[0];
   let rotating = pairs.slice(1);
 
@@ -66,7 +62,7 @@ function AischedulerNextRound(schedulerState) {
   let resting = [];
   let playing = [];
 
-  // ---------------- REST LOGIC (UNCHANGED) ----------------
+  // ================= REST LOGIC (UNCHANGED) =================
   if (fixedPairs.length > 0 && numResting >= 2) {
     let needed = numResting;
     const fixedMap = new Map();
@@ -104,7 +100,7 @@ function AischedulerNextRound(schedulerState) {
       .slice(0, numPlayersPerRound);
   }
 
-  // ---------------- PAIR PREP ----------------
+  // ================= PAIR PREP =================
   const playingSet = new Set(playing);
   let fixedPairsThisRound = [];
   for (const pair of fixedPairs) {
@@ -124,15 +120,15 @@ function AischedulerNextRound(schedulerState) {
     numCourts
   );
 
-  // ---------------- 🔴 ALL FIXED PAIRS DETECTION ----------------
+  // ================= ALL FIXED DETECTION =================
   const allFixed =
     freePlayersThisRound.length === 0 &&
     fixedPairs.length >= numCourts * 2;
 
-  // ---------------- 🔴 ROUND ROBIN FIX ----------------
+  // ================= ROUND ROBIN OVERRIDE =================
   if (allFixed) {
     const { games, byePlayers } = scheduleFixedPairsRoundRobin({
-      fixedPairs, // ✅ FULL SET (critical fix)
+      fixedPairs,
       numCourts,
       roundIndex: schedulerState.fixedPairRound || 0
     });
@@ -140,10 +136,9 @@ function AischedulerNextRound(schedulerState) {
     schedulerState.fixedPairRound =
       (schedulerState.fixedPairRound || 0) + 1;
 
-    if (byePlayers.length) {
-      resting.push(...byePlayers);
-      playing = playing.filter(p => !byePlayers.includes(p));
-    }
+    // 🔧 SINGLE SOURCE OF TRUTH FOR RESTING
+    resting = byePlayers.slice();
+    playing = activeplayers.filter(p => !resting.includes(p));
 
     schedulerState.roundIndex =
       (schedulerState.roundIndex || 0) + 1;
@@ -163,7 +158,7 @@ function AischedulerNextRound(schedulerState) {
     };
   }
 
-  // ---------------- ORIGINAL LOGIC CONTINUES (UNCHANGED) ----------------
+  // ================= ORIGINAL LOGIC CONTINUES =================
   const requiredPairsCount = Math.floor(numPlayersPerRound / 2);
   let neededFreePairs = requiredPairsCount - fixedPairsThisRound.length;
 
@@ -231,6 +226,7 @@ function AischedulerNextRound(schedulerState) {
     games
   };
 }
+
 
 
 
