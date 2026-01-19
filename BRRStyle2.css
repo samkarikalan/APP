@@ -820,3 +820,56 @@ body.locked .swap-icon {
   margin: 5px;
   font-size: 13px;
 }
+
+/* ===== PLAYER BUTTON OVERRIDES (FINAL) ===== */
+
+.Lplayer-btn,
+.Rplayer-btn {
+  width: 100%;                 /* fill team width */
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* ⬅ left aligned */
+
+  padding: 6px 14px 6px 6px;
+  gap: 10px;
+
+  white-space: nowrap;         /* ⬅ REQUIRED */
+  overflow: hidden;            /* ⬅ REQUIRED */
+}
+
+/* Gender emoji aligned to left curve */
+.gender-emoji {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 24px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.gender-emoji.male {
+  background: #e3f2fd;
+}
+
+.gender-emoji.female {
+  background: #fce4ec;
+}
+
+/* Name truncation */
+.player-name {
+  flex: 1;
+  min-width: 0;                /* 🔑 MOST IMPORTANT */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  font-weight: 600;
+  color: #000;
+}
