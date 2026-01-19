@@ -873,3 +873,27 @@ body.locked .swap-icon {
   font-weight: 600;
   color: #000;
 }
+
+/* ===== FIX PLAYER BUTTON WIDTH (FINAL OVERRIDE) ===== */
+
+.team .Lplayer-btn,
+.team .Rplayer-btn {
+  width: 100% !important;        /* ⬅ force fixed width */
+  max-width: 100% !important;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;   /* ⬅ stop centering */
+
+  white-space: nowrap !important; /* ⬅ no wrapping */
+  overflow: hidden;               /* ⬅ required */
+}
+.player-name {
+  flex: 1;
+  min-width: 0;                  /* 🔑 CRITICAL */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
