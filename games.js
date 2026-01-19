@@ -1196,7 +1196,96 @@ wrapper.appendChild(courtDiv);
   return wrapper;
 }
 
+
 function makePlayerButton(name, teamSide, gameIndex, playerIndex, data, index) {
+  const btn = document.createElement('button');
+
+  // Get player object
+  const baseName = name.split('#')[0];
+  const player = schedulerState.allPlayers.find(p => p.name === baseName);
+
+  btn.className = teamSide === 'L'
+    ? 'Lplayer-btn'
+    : 'Rplayer-btn';
+
+  /* ───────── GENDER EMOJI (LEFT) ───────── */
+  if (IS_MIXED_SESSION && player?.gender) {
+    const genderSpan = document.createElement('span');
+    genderSpan.className =
+      'gender-emoji ' +
+      (player.gender === 'Female' ? 'female' : 'male');
+
+    genderSpan.textContent =
+      player.gender === 'Female' ? '🙎‍♀️' : '🙎‍♂️';
+
+    btn.appendChild(genderSpan);
+  }
+
+  /* ───────── PLAYER NAME (TRUNCATED) ───────── */
+  const nameSpan = document.createElement('span');
+  nameSpan.className = 'player-name';
+  nameSpan.textContent = name;
+  nameSpan.title = name; // full name on long-press / hover
+
+  btn.appendChild(nameSpan);
+
+  /* ───────────────────────────────────── */
+
+  const isLatestRound = index === allRounds.length - 1;
+  if (!isLatestRound) return btn;
+
+  const handleTap = (e) => {
+    e.preventDefault();
+
+    if (window.selectedPlayer) {
+      const src = window.selectedPlayer;
+
+      if (src.from === 'rest') {
+        handleDropRestToTeam(
+          e,
+          teamSide,
+          gameIndex,
+          playerIndex,
+          data,
+          index,
+          src.playerName
+        );
+      } else {
+        handleDropBetweenTeams(
+          e,
+          teamSide,
+          gameIndex,
+          playerIndex,
+          data,
+          index,
+          src
+        );
+      }
+
+      window.selectedPlayer = null;
+      document
+        .querySelectorAll('.selected')
+        .forEach(b => b.classList.remove('selected'));
+    } else {
+      window.selectedPlayer = {
+        playerName: name,
+        teamSide,
+        gameIndex,
+        playerIndex,
+        from: 'team'
+      };
+      btn.classList.add('selected');
+    }
+  };
+
+  btn.addEventListener('click', handleTap);
+  btn.addEventListener('touchstart', handleTap);
+
+  return btn;
+}
+
+
+function xxxmakePlayerButton(name, teamSide, gameIndex, playerIndex, data, index) {
   const btn = document.createElement('button');
 
   // Determine if gender icons should be shown
