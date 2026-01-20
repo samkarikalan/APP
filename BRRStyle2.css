@@ -897,3 +897,47 @@ body.locked .swap-icon {
   text-overflow: ellipsis;
 }
 
+
+/* ===== PLAYER BUTTON (WRAP VERSION – FINAL) ===== */
+
+.team .Lplayer-btn,
+.team .Rplayer-btn {
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  white-space: normal;          /* ✅ allow wrap */
+  overflow: visible;
+
+  padding: 6px 10px 6px 6px;
+  gap: 10px;
+}
+
+/* Gender emoji stays fixed */
+.gender-emoji {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+/* Name wraps nicely */
+.player-name {
+  flex: 1;
+  min-width: 0;
+
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
+
+  line-height: 1.2;
+}
