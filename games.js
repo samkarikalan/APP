@@ -1210,16 +1210,17 @@ function makePlayerButton(name, teamSide, gameIndex, playerIndex, data, index) {
 
   /* ───────── GENDER EMOJI (LEFT) ───────── */
   if (IS_MIXED_SESSION && player?.gender) {
-    const genderSpan = document.createElement('span');
-    genderSpan.className =
-      'gender-emoji ' +
-      (player.gender === 'Female' ? 'female' : 'male');
+  const genderIcon = document.createElement('img');
+  genderIcon.className = 'gender-icon';
 
-    genderSpan.textContent =
-      player.gender === 'Female' ? '🙎‍♀️' : '🙎‍♂️';
+  genderIcon.src =
+    player.gender === 'Female'
+      ? './female.png'
+      : './male.png';
 
-    btn.appendChild(genderSpan);
-  }
+  genderIcon.alt = player.gender;
+  btn.prepend(genderIcon);
+}
 
   /* ───────── PLAYER NAME (TRUNCATED) ───────── */
   const nameSpan = document.createElement('span');
