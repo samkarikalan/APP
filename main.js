@@ -1,10 +1,7 @@
 let sessionFinished = false;
 let lastPage = null;
 
-genderIcon.src =
-  player.gender === 'Female'
-    ? './female.jpg'
-    : './male.jpg';
+
 
 function isPageVisible(pageId) {
   const el = document.getElementById(pageId);

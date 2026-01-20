@@ -409,6 +409,7 @@
   margin: 1px 0;
   background: B5EBDD;
   transition: 0.25s ease;
+  
 }
 
 
@@ -687,6 +688,7 @@ body.locked .swap-icon {
   font-weight: 600;
   color: #ffffff;
   cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
   transition: transform 0.1s ease, opacity 0.15s ease;
 }
 
@@ -823,44 +825,9 @@ body.locked .swap-icon {
 
 /* ===== PLAYER BUTTON OVERRIDES (FINAL) ===== */
 
-.Lplayer-btn,
-.Rplayer-btn {
-  width: 100%;                 /* fill team width */
-  box-sizing: border-box;
 
-  display: flex;
-  align-items: center;
-  justify-content: flex-start; /* ⬅ left aligned */
 
-  padding: 6px 14px 6px 6px;
-  gap: 10px;
 
-  white-space: nowrap;         /* ⬅ REQUIRED */
-  overflow: hidden;            /* ⬅ REQUIRED */
-}
-
-/* Gender emoji aligned to left curve */
-.gender-emoji {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 24px;
-  flex-shrink: 0;
-  pointer-events: none;
-}
-
-.gender-emoji.male {
-  background: #e3f2fd;
-}
-
-.gender-emoji.female {
-  background: #fce4ec;
-}
 
 /* Name truncation */
 .player-name {
@@ -870,25 +837,13 @@ body.locked .swap-icon {
   white-space: nowrap;
   text-overflow: ellipsis;
 
-  font-weight: 600;
+  font-weight: 400;
   color: #000;
 }
 
 /* ===== FIX PLAYER BUTTON WIDTH (FINAL OVERRIDE) ===== */
 
-.team .Lplayer-btn,
-.team .Rplayer-btn {
-  width: 100% !important;        /* ⬅ force fixed width */
-  max-width: 100% !important;
-  box-sizing: border-box;
 
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;   /* ⬅ stop centering */
-
-  white-space: nowrap !important; /* ⬅ no wrapping */
-  overflow: hidden;               /* ⬅ required */
-}
 .player-name {
   flex: 1;
   min-width: 0;                  /* 🔑 CRITICAL */
@@ -904,7 +859,7 @@ body.locked .swap-icon {
 .team .Rplayer-btn {
   width: 100%;
   box-sizing: border-box;
-
+  font-weight:400;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -912,23 +867,12 @@ body.locked .swap-icon {
   white-space: normal;          /* ✅ allow wrap */
   overflow: visible;
 
-  padding: 6px 10px 6px 6px;
-  gap: 10px;
+  padding: 1px 1px 1px 1px;
+  gap: 1px;
 }
 
-/* Gender emoji stays fixed */
-.gender-emoji {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
-  font-size: 24px;
-  flex-shrink: 0;
-}
 
 /* Name wraps nicely */
 .player-name {
@@ -943,9 +887,9 @@ body.locked .swap-icon {
 }
 
 .gender-icon {
-  width: 38px;
-  height: 38px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   object-fit: cover;
-  background-color: #fff; /* hides JPG edges */
+  background-color: none;
 }

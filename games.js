@@ -1214,9 +1214,9 @@ function makePlayerButton(name, teamSide, gameIndex, playerIndex, data, index) {
   genderIcon.className = 'gender-icon';
 
   genderIcon.src =
-    player.gender === 'Female'
-      ? './female.png'
-      : './male.png';
+  player.gender === 'Female'
+    ? 'female.jpg'
+    : 'male.jpg';
 
   genderIcon.alt = player.gender;
   btn.prepend(genderIcon);
