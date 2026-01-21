@@ -1280,7 +1280,7 @@ function makeRestButton(player, data, index) {
   return btn;
 }
 
-function wkmakePlayerButton(name, teamSide, gameIndex, playerIndex, data, index) {
+function makePlayerButton(name, teamSide, gameIndex, playerIndex, data, index) {
   const btn = document.createElement('button');
 
   // Get player object
@@ -1454,7 +1454,7 @@ if (IS_MIXED_SESSION && player?.gender) {
 
 
 
-function makeRestButton(player, data, index) {
+function xxxmakeRestButton(player, data, index) {
   const btn = document.createElement('button');
 
   let genderIcon = "";
