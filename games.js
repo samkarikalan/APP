@@ -4,7 +4,7 @@ let isLocked = true;
 
   function toggleLock() {
     isLocked = !isLocked;
-    lockIcon.src = isLocked ? 'lock.jpg' : 'unlock.jpg';
+    lockIcon.src = isLocked ? 'lock.png' : 'unlock.png';
     lockIcon.alt = isLocked ? 'Lock' : 'Unlock';
   }
 
@@ -813,6 +813,47 @@ function clearPreviousRound() {
 
 // Show a round
 function showRound(index) {
+  clearPreviousRound();
+  const resultsDiv = document.getElementById('game-results');
+  resultsDiv.innerHTML = '';
+
+  const data = allRounds[index];
+  if (!data) return;
+
+  // ✅ Update round title
+  const roundTitle = document.getElementById("roundTitle");
+  roundTitle.className = "roundTitle";
+  roundTitle.innerText = translations[currentLang].roundno + " " + data.round;
+
+  // ✅ Create sections safely
+  let restDiv = null;
+  if (data.resting && data.resting.length !== 0) {
+    restDiv = renderRestingPlayers(data, index);
+  }
+
+  const gamesDiv = renderGames(data, index);
+
+  // ✅ Wrap everything
+  const wrapper = document.createElement('div');
+  wrapper.className = 'round-wrapper';
+
+  // 🔒 Apply lock state globally
+  if (interactionLocked) {
+    wrapper.classList.add('locked');
+  }
+
+  // ✅ Append conditionally
+  if (restDiv) {
+    wrapper.append(gamesDiv, restDiv);
+  } else {
+    wrapper.append(gamesDiv);
+  }
+
+  resultsDiv.append(wrapper);
+}
+
+
+function goodshowRound(index) {
   clearPreviousRound();
   const resultsDiv = document.getElementById('game-results');
   resultsDiv.innerHTML = '';

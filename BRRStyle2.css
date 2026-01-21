@@ -63,7 +63,7 @@
   border-radius: 1rem;
   overflow: hidden;  
   
-  padding: 5px;
+  padding: 2px;
   box-sizing: border-box;
   text-align: center;
   font-weight: bold;
@@ -102,7 +102,7 @@
   cursor: pointer;
 }
 .team[data-team-side="L"] {
-  background-color: #e3fdf0;
+  background-color: #e9f1ed;
   border-color: #90caf9;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
@@ -126,7 +126,7 @@
   top: 0;
   bottom: 0;
   left: 50%;
-  width: 0.25rem; /* line thickness */
+  width: 0.1rem; /* line thickness */
   background:none;
   transform: translateX(-50%);
   z-index: 1;
@@ -894,7 +894,7 @@ body.locked .swap-icon {
 #roundTitle {
   display: flex;
   width: fit-content;
-  margin: 0;                /* 🔥 remove auto margins */
+  margin: 5px;                /* 🔥 remove auto margins */
   padding: 0 12px;
 
   font-size: 1.25rem;
@@ -912,6 +912,10 @@ body.locked .swap-icon {
 .lock-icon {
   width: 30px;
   height: 30px;
+  border-radius: 50%;
   cursor: pointer;
 }
 
+body.locked .swap-icon {
+  display: none;
+}
