@@ -893,3 +893,9 @@ body.locked .swap-icon {
   object-fit: cover;
   background-color: none;
 }
+.rest-btn {
+  display: inline-flex;
+  align-items: center;   /* ← vertical alignment */
+  gap: 6px;
+}
+
