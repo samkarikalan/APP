@@ -1196,8 +1196,91 @@ wrapper.appendChild(courtDiv);
   return wrapper;
 }
 
+function makeRestButton(player, data, index) {
+  const btn = document.createElement('button');
+  btn.className = 'rest-btn';
 
-function makePlayerButton(name, teamSide, gameIndex, playerIndex, data, index) {
+  // ───────── GENDER ICON (IMAGE-BASED) ─────────
+  if (IS_MIXED_SESSION && player?.gender) {
+    const genderIcon = document.createElement('img');
+    genderIcon.className = 'gender-icon';
+
+    genderIcon.src =
+      player.gender === 'Female'
+        ? 'female.jpg'
+        : 'male.jpg';
+
+    genderIcon.alt = player.gender;
+    btn.appendChild(genderIcon);
+  }
+
+  // ───────── LABEL ─────────
+  const label = player.displayName || player.name;
+  const textNode = document.createElement('span');
+  textNode.innerText = label;
+  btn.appendChild(textNode);
+
+  /* ───────── COLOR LOGIC ───────── */
+
+  const restMatch = label.match(/#(\d+)/);
+  const restCount = restMatch ? parseInt(restMatch[1], 10) : 0;
+
+  if (IS_MIXED_SESSION && player?.gender) {
+    // Gender-based hue + rest-based lightness
+    const hue = player.gender === "Male" ? 200 : 330;
+    const lightness = Math.min(90, 65 + restCount * 5);
+
+    btn.style.backgroundColor = `hsl(${hue}, 70%, ${lightness}%)`;
+    btn.style.color = "#000";
+  } else {
+    // Original rest-count coloring
+    if (restMatch) {
+      const hue = (restCount * 40) % 360;
+      btn.style.backgroundColor = `hsl(${hue}, 60%, 85%)`;
+    } else {
+      btn.style.backgroundColor = '#eee';
+    }
+    btn.style.color = "#000";
+  }
+
+  /* ─────────────────────────────── */
+
+  const isLatestRound = index === allRounds.length - 1;
+  if (!isLatestRound) return btn;
+
+  const handleTap = (e) => {
+    e.preventDefault();
+
+    if (window.selectedPlayer) {
+      const src = window.selectedPlayer;
+      if (src.from === 'team') {
+        handleDropRestToTeam(
+          e,
+          src.teamSide,
+          src.gameIndex,
+          src.playerIndex,
+          data,
+          index,
+          label
+        );
+      }
+      window.selectedPlayer = null;
+      document
+        .querySelectorAll('.selected')
+        .forEach(b => b.classList.remove('selected'));
+    } else {
+      window.selectedPlayer = { playerName: label, from: 'rest' };
+      btn.classList.add('selected');
+    }
+  };
+
+  btn.addEventListener('click', handleTap);
+  btn.addEventListener('touchstart', handleTap);
+
+  return btn;
+}
+
+function wkmakePlayerButton(name, teamSide, gameIndex, playerIndex, data, index) {
   const btn = document.createElement('button');
 
   // Get player object
