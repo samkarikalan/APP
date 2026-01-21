@@ -175,7 +175,11 @@
 <!--           Rounds Page         -->
 <!-- ============================= -->
 <div id="page2" class="page" style="display:none;">  
-  <div id="roundTitle">R</div>
+  <div class="title-card">
+    <div id="roundTitle">R</div>
+    <img id="lockToggleBtn" class="lock-icon" src="lock.jpg" alt="Lock" />
+  </div>
+  
   <div id="game-results"></div>  
   <div class="row-field">  
     <div class="court-card">
@@ -184,8 +188,7 @@
       <span id="num-courts">1</span>
       <button class="circle-btn" id="courtPlus">+</button>
     </div>    
-    <!-- 🔒 Lock / Unlock Icon -->
-    <span class="lock-icon" id="lockToggleBtn">🔒</span>
+    
     <!-- Timer Icon -->
     <div class="timer-card">
       <button id="timerToggleBtn" class="row-label timer-toggle-btn" onclick="toggleTimer()">⏱️</button>

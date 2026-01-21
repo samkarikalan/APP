@@ -1,3 +1,15 @@
+
+let isLocked = true;
+  const lockIcon = document.getElementById('lockToggleBtn');
+
+  function toggleLock() {
+    isLocked = !isLocked;
+    lockIcon.src = isLocked ? 'lock.jpg' : 'unlock.jpg';
+    lockIcon.alt = isLocked ? 'Lock' : 'Unlock';
+  }
+
+  lockIcon.addEventListener('click', toggleLock);
+
 function getNextFixedPairGames(schedulerState, fixedPairs, numCourts) {
   const hash = JSON.stringify(fixedPairs);
 
