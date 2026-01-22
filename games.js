@@ -1794,4 +1794,118 @@ lockBtn.addEventListener('click', () => {
   lockBtn.textContent = interactionLocked ? '🔒' : '🔓';
 });
 
+const numCourtsEl = document.getElementById("num-courts");
+const configBtn = document.getElementById("courtConfigBtn");
+const configPanel = document.getElementById("courtConfig");
+
+let numCourts = 1;
+
+// This will be sent to schedulerState later
+const courtPreferences = {};
+
+/* ---------------- GENDER AVAILABILITY ---------------- */
+
+function getGenderCounts(players) {
+  let M = 0, F = 0;
+  for (const p of players) {
+    if (p.gender === "M") M++;
+    else if (p.gender === "F") F++;
+  }
+  return { M, F };
+}
+
+function getAvailableCourtTypes(players) {
+  const { M, F } = getGenderCounts(players);
+  const types = ["OPEN"];
+
+  if (M >= 4) types.push("MD");
+  if (F >= 4) types.push("LD");
+  if (M >= 2 && F >= 2) types.push("XD");
+
+  return types;
+}
+
+/* ---------------- NORMALIZE SELECTION ---------------- */
+
+function normalizeCourtPreferences(players) {
+  const available = getAvailableCourtTypes(players);
+
+  for (let i = 1; i <= numCourts; i++) {
+    if (!available.includes(courtPreferences[i])) {
+      courtPreferences[i] = "OPEN";
+    }
+  }
+}
+
+/* ---------------- RENDER CONFIG ---------------- */
+
+function renderCourtConfig() {
+  configPanel.innerHTML = "";
+
+  const availableTypes = getAvailableCourtTypes(activeplayers);
+  normalizeCourtPreferences(activeplayers);
+
+  for (let i = 1; i <= numCourts; i++) {
+    const row = document.createElement("div");
+    row.className = "court-line";
+
+    const label = document.createElement("div");
+    label.className = "court-label";
+    label.textContent = `Court ${i}`;
+
+    row.appendChild(label);
+
+    availableTypes.forEach(type => {
+      const btn = document.createElement("button");
+      btn.className = "type-btn";
+
+      if ((courtPreferences[i] || "OPEN") === type) {
+        btn.classList.add("active");
+      }
+
+      const img = document.createElement("img");
+      img.src = `${type}.png`;
+      img.alt = type;
+
+      btn.appendChild(img);
+
+      btn.onclick = () => {
+        courtPreferences[i] = type;
+        renderCourtConfig();
+      };
+
+      row.appendChild(btn);
+    });
+
+    configPanel.appendChild(row);
+  }
+}
+
+/* ---------------- EVENTS ---------------- */
+
+// Toggle config panel
+configBtn.onclick = () => {
+  configPanel.classList.toggle("hidden");
+  renderCourtConfig();
+};
+
+// Increase courts
+document.getElementById("courtPlus").onclick = () => {
+  numCourts++;
+  numCourtsEl.textContent = numCourts;
+  renderCourtConfig();
+};
+
+// Decrease courts
+document.getElementById("courtMinus").onclick = () => {
+  if (numCourts <= 1) return;
+
+  delete courtPreferences[numCourts];
+  numCourts--;
+
+  numCourtsEl.textContent = numCourts;
+  renderCourtConfig();
+};
+
+
 
