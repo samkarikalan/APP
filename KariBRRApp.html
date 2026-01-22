@@ -182,6 +182,7 @@
   
   <div id="game-results"></div>  
   <div class="row-field">  
+    <!--
     <div class="court-card">
       <label for="num-courts" class="row-label" data-i18n="courts"></label>
       <button class="circle-btn" id="courtMinus">−</button>
@@ -229,7 +230,50 @@
     <span class="icon">▶</span>
   </button>
 </div>
+  
+<div class="court-card" id="courtCard">
 
+  <label class="row-label">Courts</label>
+
+  <!-- TOP ROW -->
+  <div class="court-row">
+    <button class="circle-btn" id="courtMinus">−</button>
+    <span id="num-courts">1</span>
+    <button class="circle-btn" id="courtPlus">+</button>
+
+    <button class="config-btn" id="courtConfigBtn">
+      ⚙️
+    </button>
+  </div>
+
+  <!-- EXPANDABLE CONFIG AREA -->
+  <div class="court-config hidden" id="courtConfig">
+
+    <!-- SAMPLE COURT ROW (JS WILL CLONE THIS) -->
+    <!--
+    <div class="court-line">
+      <div class="court-label">Court 1</div>
+
+      <button class="type-btn active">
+        <img src="MD.png" alt="MD">
+      </button>
+
+      <button class="type-btn">
+        <img src="LD.png" alt="LD">
+      </button>
+
+      <button class="type-btn">
+        <img src="XD.png" alt="XD">
+      </button>
+
+      <button class="type-btn">
+        <img src="OPEN.png" alt="OPEN">
+      </button>
+    </div>
+    -->
+
+  </div>
+</div>
   
 </div>
 
