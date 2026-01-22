@@ -177,7 +177,7 @@ function goBack() {
   btn.disabled = false;
 }
 
-function nextRound() {
+function xxxnextRound() {
   
   if (currentRoundIndex + 1 < allRounds.length) {
     currentRoundIndex++;
@@ -542,7 +542,7 @@ function rebuildRestQueue(restQueue) {
 
   
 
-function RefreshRound() {
+function xxxRefreshRound() {
     schedulerState.roundIndex = allRounds.length - 1;
     currentRoundIndex = schedulerState.roundIndex;
     const newRound = AischedulerNextRound(schedulerState);
