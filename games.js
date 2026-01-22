@@ -1988,30 +1988,39 @@ lockBtn.addEventListener('click', () => {
   lockBtn.textContent = interactionLocked ? '🔒' : '🔓';
 });
 
-const numCourtsEl = document.getElementById("num-courts");
-const configBtn = document.getElementById("courtConfigBtn");
-const configPanel = document.getElementById("courtConfig");
 
-let numCourts = 1;
 
-// This will be sent to schedulerState later
-const courtPreferences = {};
 
-/* ---------------- GENDER AVAILABILITY ---------------- */
+/*************************************************
+ * GLOBAL STATE (already exists in your app)
+ *************************************************/
 
-function getGenderCounts(players) {
-  let M = 0, F = 0;
-  for (const p of players) {
-    if (p.gender === "M") M++;
-    else if (p.gender === "F") F++;
-  }
-  return { M, F };
-}
+// REQUIRED existing globals:
+// schedulerState
+//   - schedulerState.activeplayers
+//   - schedulerState.numCourts
+//   - schedulerState.courtPreferences
+// allRounds
+// currentRoundIndex
+// AischedulerNextRound()
+// assignCourtsByPreference()
+// showRound()
+// updSchedule()
+// updateSummaryPageAccess()
+
+/*************************************************
+ * COURT AVAILABILITY (OPTIONAL BUT REQUIRED BY YOU)
+ *************************************************/
 
 function getAvailableCourtTypes(players) {
-  const { M, F } = getGenderCounts(players);
-  const types = ["OPEN"];
+  let M = 0, F = 0;
 
+  players.forEach(p => {
+    if (p.gender === "M") M++;
+    if (p.gender === "F") F++;
+  });
+
+  const types = ["OPEN"];
   if (M >= 4) types.push("MD");
   if (F >= 4) types.push("LD");
   if (M >= 2 && F >= 2) types.push("XD");
@@ -2019,87 +2028,129 @@ function getAvailableCourtTypes(players) {
   return types;
 }
 
-/* ---------------- NORMALIZE SELECTION ---------------- */
+/*************************************************
+ * COURT PREFERENCE HELPERS
+ *************************************************/
 
-function normalizeCourtPreferences(players) {
-  const available = getAvailableCourtTypes(players);
-
+function rebuildCourtPreferences(numCourts, oldPrefs = {}) {
+  const prefs = {};
   for (let i = 1; i <= numCourts; i++) {
-    if (!available.includes(courtPreferences[i])) {
-      courtPreferences[i] = "OPEN";
-    }
+    prefs[i] = oldPrefs[i] || "OPEN";
   }
+  return prefs;
 }
 
-/* ---------------- RENDER CONFIG ---------------- */
+function finalizeRound(rawRound) {
+  rawRound.games = assignCourtsByPreference(
+    rawRound.games,
+    schedulerState.courtPreferences
+  );
+  return rawRound;
+}
+
+/*************************************************
+ * COURT CONFIG UI
+ *************************************************/
+
+const numCourtsEl = document.getElementById("num-courts");
+const configBtn = document.getElementById("courtConfigBtn");
+const configPanel = document.getElementById("courtConfigPanel");
 
 function renderCourtConfig() {
+  const prefs = schedulerState.courtPreferences;
+  const available = getAvailableCourtTypes(
+    schedulerState.activeplayers
+  );
+
   configPanel.innerHTML = "";
 
-  const availableTypes = getAvailableCourtTypes(activeplayers);
-  normalizeCourtPreferences(activeplayers);
-
-  for (let i = 1; i <= numCourts; i++) {
+  for (let i = 1; i <= schedulerState.numCourts; i++) {
     const row = document.createElement("div");
-    row.className = "court-line";
+    row.className = "court-row";
 
-    const label = document.createElement("div");
-    label.className = "court-label";
+    const label = document.createElement("span");
     label.textContent = `Court ${i}`;
-
     row.appendChild(label);
 
-    availableTypes.forEach(type => {
-      const btn = document.createElement("button");
-      btn.className = "type-btn";
-
-      if ((courtPreferences[i] || "OPEN") === type) {
-        btn.classList.add("active");
-      }
-
+    available.forEach(type => {
       const img = document.createElement("img");
       img.src = `${type}.png`;
-      img.alt = type;
+      img.className =
+        (prefs[i] || "OPEN") === type ? "active" : "";
 
-      btn.appendChild(img);
-
-      btn.onclick = () => {
-        courtPreferences[i] = type;
+      img.onclick = () => {
+        prefs[i] = type;
         renderCourtConfig();
       };
 
-      row.appendChild(btn);
+      row.appendChild(img);
     });
 
     configPanel.appendChild(row);
   }
 }
 
-/* ---------------- EVENTS ---------------- */
-
-// Toggle config panel
 configBtn.onclick = () => {
   configPanel.classList.toggle("hidden");
   renderCourtConfig();
 };
 
-// Increase courts
-document.getElementById("courtPlus").onclick = () => {
-  numCourts++;
-  numCourtsEl.textContent = numCourts;
-  renderCourtConfig();
-};
+/*************************************************
+ * COURT COUNT (+ / -)
+ *************************************************/
 
-// Decrease courts
-document.getElementById("courtMinus").onclick = () => {
-  if (numCourts <= 1) return;
+function onCourtCountChange(newCount) {
+  if (newCount < 1) return;
 
-  delete courtPreferences[numCourts];
-  numCourts--;
+  schedulerState.numCourts = newCount;
+  numCourtsEl.textContent = newCount;
 
-  numCourtsEl.textContent = numCourts;
-  renderCourtConfig();
-};
+  schedulerState.courtPreferences = rebuildCourtPreferences(
+    newCount,
+    schedulerState.courtPreferences
+  );
 
+  if (allRounds.length > 0) {
+    RefreshRound();
+  }
+}
 
+document.getElementById("courtPlus").onclick = () =>
+  onCourtCountChange(schedulerState.numCourts + 1);
+
+document.getElementById("courtMinus").onclick = () =>
+  onCourtCountChange(schedulerState.numCourts - 1);
+
+/*************************************************
+ * ROUND FLOW (FINAL, CORRECT)
+ *************************************************/
+
+function nextRound() {
+  if (currentRoundIndex + 1 < allRounds.length) {
+    currentRoundIndex++;
+    showRound(currentRoundIndex);
+  } else {
+    updSchedule(allRounds.length - 1, schedulerState);
+
+    let rawRound = AischedulerNextRound(schedulerState);
+    rawRound = finalizeRound(rawRound);
+
+    allRounds.push(rawRound);
+    currentRoundIndex = allRounds.length - 1;
+    showRound(currentRoundIndex);
+  }
+
+  updateSummaryPageAccess();
+}
+
+function RefreshRound() {
+  schedulerState.roundIndex = allRounds.length - 1;
+  currentRoundIndex = schedulerState.roundIndex;
+
+  let rawRound = AischedulerNextRound(schedulerState);
+  rawRound = finalizeRound(rawRound);
+
+  allRounds[allRounds.length - 1] = rawRound;
+  showRound(currentRoundIndex);
+}
 
