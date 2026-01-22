@@ -90,6 +90,200 @@ function AischedulerNextRound(schedulerState) {
   const numResting = Math.max(totalPlayers - numPlayersPerRound, 0);
 
   const fixedPairPlayers = new Set(fixedPairs.flat());
+  let resting = [];
+  let playing = [];
+
+  // ================= REST SELECTION =================
+  if (fixedPairs.length > 0 && numResting >= 2) {
+    let needed = numResting;
+    const fixedMap = new Map();
+
+    for (const [a, b] of fixedPairs) {
+      fixedMap.set(a, b);
+      fixedMap.set(b, a);
+    }
+
+    for (const p of schedulerState.restQueue) {
+      if (resting.includes(p)) continue;
+
+      const partner = fixedMap.get(p);
+      if (partner && needed >= 2) {
+        resting.push(p, partner);
+        needed -= 2;
+      } else if (!partner && needed > 0) {
+        resting.push(p);
+        needed -= 1;
+      }
+
+      if (needed <= 0) break;
+    }
+
+    playing = activeplayers.filter(p => !resting.includes(p));
+  } else {
+    const sortedPlayers = [...schedulerState.restQueue];
+    resting = sortedPlayers.slice(0, numResting);
+    playing = activeplayers
+      .filter(p => !resting.includes(p))
+      .slice(0, numPlayersPerRound);
+  }
+
+  // ================= PAIR PREP =================
+  const playingSet = new Set(playing);
+
+  let fixedPairsThisRound = fixedPairs.filter(
+    ([a, b]) => playingSet.has(a) && playingSet.has(b)
+  );
+
+  const fixedPairPlayersThisRound = new Set(fixedPairsThisRound.flat());
+
+  let freePlayersThisRound = playing.filter(
+    p => !fixedPairPlayersThisRound.has(p)
+  );
+
+  freePlayersThisRound = reorderFreePlayersByLastRound(
+    freePlayersThisRound,
+    lastRound,
+    numCourts
+  );
+
+  // ================= ALL FIXED =================
+  const allFixed =
+    freePlayersThisRound.length === 0 &&
+    fixedPairs.length >= numCourts * 2;
+
+  if (allFixed) {
+    const games = getNextFixedPairGames(
+      schedulerState,
+      fixedPairs,
+      numCourts
+    );
+
+    const classified = games.map(g => ({
+      ...g,
+      type: getMatchType(g.pair1, g.pair2)
+    }));
+
+    const finalGames = assignCourtsByPreference(
+      classified,
+      courtPreferences
+    );
+
+    const playingPlayers = new Set(
+      finalGames.flatMap(g => [...g.pair1, ...g.pair2])
+    );
+
+    resting = activeplayers.filter(p => !playingPlayers.has(p));
+    playing = [...playingPlayers];
+
+    schedulerState.roundIndex =
+      (schedulerState.roundIndex || 0) + 1;
+
+    return {
+      round: schedulerState.roundIndex,
+      resting: resting.map(p => `${p}#${(restCount.get(p) || 0) + 1}`),
+      playing,
+      games: finalGames,
+    };
+  }
+
+  // ================= FREE PAIR LOGIC =================
+  const requiredPairsCount = Math.floor(numPlayersPerRound / 2);
+  let neededFreePairs =
+    requiredPairsCount - fixedPairsThisRound.length;
+
+  let selectedPairs = findDisjointPairs(
+    freePlayersThisRound,
+    schedulerState.pairPlayedSet,
+    neededFreePairs,
+    opponentMap
+  );
+
+  let finalFreePairs = selectedPairs || [];
+
+  if (finalFreePairs.length < neededFreePairs) {
+    const free = freePlayersThisRound.slice();
+    const usedPlayers = new Set(finalFreePairs.flat());
+
+    for (let i = 0; i < free.length; i++) {
+      const a = free[i];
+      if (usedPlayers.has(a)) continue;
+
+      for (let j = i + 1; j < free.length; j++) {
+        const b = free[j];
+        if (usedPlayers.has(b)) continue;
+
+        finalFreePairs.push([a, b]);
+        usedPlayers.add(a);
+        usedPlayers.add(b);
+        break;
+      }
+
+      if (finalFreePairs.length >= neededFreePairs) break;
+    }
+  }
+
+  let allPairs = shuffle(
+    fixedPairsThisRound.concat(finalFreePairs)
+  );
+
+  let matchupScores = getMatchupScores(allPairs, opponentMap);
+
+  const rawGames = [];
+  const usedPairs = new Set();
+
+  for (const match of matchupScores) {
+    const { pair1, pair2 } = match;
+    const p1Key = pair1.join("&");
+    const p2Key = pair2.join("&");
+
+    if (usedPairs.has(p1Key) || usedPairs.has(p2Key)) continue;
+
+    rawGames.push({ pair1, pair2 });
+
+    usedPairs.add(p1Key);
+    usedPairs.add(p2Key);
+
+    if (rawGames.length >= numCourts) break;
+  }
+
+  // ================= COURT ASSIGNMENT =================
+  const classifiedGames = rawGames.map(g => ({
+    ...g,
+    type: getMatchType(g.pair1, g.pair2)
+  }));
+
+  const finalGames = assignCourtsByPreference(
+    classifiedGames,
+    courtPreferences
+  );
+
+  schedulerState.roundIndex =
+    (schedulerState.roundIndex || 0) + 1;
+
+  return {
+    round: schedulerState.roundIndex,
+    resting: resting.map(p => `${p}#${(restCount.get(p) || 0) + 1}`),
+    playing,
+    games: finalGames,
+  };
+}
+
+
+function xxxxAischedulerNextRound(schedulerState) {
+  const {
+    activeplayers,
+    numCourts,
+    fixedPairs,
+    restCount,
+    opponentMap,
+    lastRound,
+  } = schedulerState;
+
+  const totalPlayers = activeplayers.length;
+  const numPlayersPerRound = numCourts * 4;
+  const numResting = Math.max(totalPlayers - numPlayersPerRound, 0);
+
+  const fixedPairPlayers = new Set(fixedPairs.flat());
   let freePlayers = activeplayers.filter(p => !fixedPairPlayers.has(p));
 
   let resting = [];
