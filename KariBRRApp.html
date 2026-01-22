@@ -181,6 +181,8 @@
   </div>
   
   <div id="game-results"></div>  
+
+  <!--
   <div class="row-field">  
     <div class="court-card">
       <label for="num-courts" class="row-label" data-i18n="courts"></label>
@@ -189,7 +191,7 @@
       <button class="circle-btn" id="courtPlus">+</button>
     </div>    
     
-    <!-- Timer Icon -->
+    <!-- Timer Icon 
     <div class="timer-card">
       <button id="timerToggleBtn" class="row-label timer-toggle-btn" onclick="toggleTimer()">⏱️</button>
 
@@ -198,7 +200,28 @@
       <button class="circle-btn" id="timerPlus">+</button>
     </div>
   </div>
+  -->
+ <div class="court-card">
 
+  <div class="court-header">
+    <span class="label">Courts</span>
+
+    <button class="circle-btn" id="courtMinus">−</button>
+    <span id="num-courts">1</span>
+    <button class="circle-btn" id="courtPlus">+</button>
+
+    <!-- SUMMARY ICONS -->
+    <div id="courtSummary" class="court-summary"></div>
+
+    <button class="config-btn" id="courtConfigBtn">⚙</button>
+  </div>
+
+  <!-- CONFIG PANEL -->
+  <div id="courtConfigPanel" class="court-config hidden"></div>
+
+</div>
+
+  
   <div class="action-card">
   <!-- LEFT : Mix / Refresh (secondary) -->
   <button
