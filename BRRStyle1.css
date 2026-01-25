@@ -688,7 +688,7 @@ display: block;
   border-radius: 6px;
   color: white;
   text-align: center;
-  width: 150px; /* constant width */
+  min-width: 150px; /* constant width */
 }
 
 /* Status colors */

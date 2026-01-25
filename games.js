@@ -47,13 +47,17 @@ function setStatus(status) {
   statusEl.classList.remove("status-ready", "status-progress");
 
   if (status === "Ready") {
-    statusEl.textContent = "Status: Ready";
+    statusEl.dataset.i18n = "statusReady";
     statusEl.classList.add("status-ready");
   } else if (status === "In Progress") {
-    statusEl.textContent = "Status: Progress...";
+    statusEl.dataset.i18n = "statusProgress";
     statusEl.classList.add("status-progress");
   }
+
+  // Re-apply translations so text updates immediately
+  setLanguage(currentLang);
 }
+
 
 
 let isLocked = true;
