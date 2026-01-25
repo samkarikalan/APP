@@ -22,7 +22,7 @@ const translations = {
     fixedPairs: "Set Fixed Pairs (Optional)",
     add: "Add",
     pround: " Round",
-    nround: "Start Round ",
+    nround: "Play Round ",
     endrounds: "Finish & Next Round ",
     roundno: "Round ",
     roundShort: "R",
