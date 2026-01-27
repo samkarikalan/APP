@@ -15,6 +15,197 @@ function AischedulerNextRound(schedulerState) {
       schedulerState.replayIndex %
       schedulerState.completedSchedule.length;
 
+    const round = schedulerState.completedSchedule[idx];
+    schedulerState.replayIndex++;
+    schedulerState.roundIndex++;
+
+    return { ...round, round: schedulerState.roundIndex };
+  }
+
+  const playersPerRound = numCourts * 4;
+  const restNeeded = Math.max(activeplayers.length - playersPerRound, 0);
+
+  // ================= REST =================
+  const restSorted = [...activeplayers].sort(
+    (a, b) => (restCount.get(b) || 0) - (restCount.get(a) || 0)
+  );
+
+  const resting = restSorted.slice(0, restNeeded);
+  const playing = activeplayers.filter(p => !resting.includes(p));
+
+  // ================= FIXED PAIRS =================
+  const playingSet = new Set(playing);
+  const fixedThisRound = fixedPairs.filter(
+    ([a, b]) => playingSet.has(a) && playingSet.has(b)
+  );
+
+  const fixedPlayers = new Set(fixedThisRound.flat());
+  let freePlayers = playing.filter(p => !fixedPlayers.has(p));
+
+  // ================= AVOID LAST ROUND =================
+  const lastPlayers = new Set(
+    lastRound
+      ? lastRound.games.flatMap(g => [...g.pair1, ...g.pair2])
+      : []
+  );
+
+  freePlayers.sort((a, b) => {
+    const la = lastPlayers.has(a) ? 1 : 0;
+    const lb = lastPlayers.has(b) ? 1 : 0;
+    if (la !== lb) return la - lb;
+    return (restCount.get(a) || 0) - (restCount.get(b) || 0);
+  });
+
+  // ================= BUILD FREE PAIRS =================
+  const neededPairs =
+    playersPerRound / 2 - fixedThisRound.length;
+
+  const used = new Set();
+  const freePairs = [];
+
+  for (let i = 0; i < freePlayers.length; i++) {
+    const a = freePlayers[i];
+    if (used.has(a)) continue;
+
+    let bestB = null;
+    let bestScore = Infinity;
+
+    for (let j = i + 1; j < freePlayers.length; j++) {
+      const b = freePlayers[j];
+      if (used.has(b)) continue;
+
+      const pairKey =
+        a < b ? `${a}|${b}` : `${b}|${a}`;
+
+      // partner repeat? penalize
+      const partnerPenalty = pairPlayedSet.has(pairKey) ? 1000 : 0;
+
+      // opponent freshness score
+      let oppScore = 0;
+      oppScore += opponentMap.get(a)?.get(b) || 0;
+      oppScore += opponentMap.get(b)?.get(a) || 0;
+
+      const score = partnerPenalty + oppScore;
+
+      if (score < bestScore) {
+        bestScore = score;
+        bestB = b;
+        if (score === 0) break;
+      }
+    }
+
+    if (bestB) {
+      freePairs.push([a, bestB]);
+      used.add(a);
+      used.add(bestB);
+    }
+
+    if (freePairs.length >= neededPairs) break;
+  }
+
+  const allPairs = [...fixedThisRound, ...freePairs];
+
+  // ================= MATCHUPS =================
+  const games = [];
+  const pairUsed = new Set();
+
+  while (allPairs.length >= 2 && games.length < numCourts) {
+    let best = null;
+    let bestScore = Infinity;
+
+    for (let i = 0; i < allPairs.length; i++) {
+      for (let j = i + 1; j < allPairs.length; j++) {
+        const p1 = allPairs[i];
+        const p2 = allPairs[j];
+
+        const k1 = p1.join("&");
+        const k2 = p2.join("&");
+        if (pairUsed.has(k1) || pairUsed.has(k2)) continue;
+
+        let score = 0;
+        for (const a of p1) {
+          for (const b of p2) {
+            score += opponentMap.get(a)?.get(b) || 0;
+          }
+        }
+
+        if (score < bestScore) {
+          bestScore = score;
+          best = [p1, p2];
+          if (score === 0) break;
+        }
+      }
+    }
+
+    if (!best) break;
+
+    games.push({
+      court: games.length + 1,
+      pair1: best[0],
+      pair2: best[1],
+    });
+
+    pairUsed.add(best[0].join("&"));
+    pairUsed.add(best[1].join("&"));
+  }
+
+  // ================= EXHAUSTION =================
+  let exhausted = true;
+  for (const [p1, map] of opponentMap.entries()) {
+    for (const v of map.values()) {
+      if (v === 0) {
+        exhausted = false;
+        break;
+      }
+    }
+    if (!exhausted) break;
+  }
+
+  schedulerState.roundIndex++;
+
+  const result = {
+    round: schedulerState.roundIndex,
+    resting: resting.map(p => `${p}#${(restCount.get(p) || 0) + 1}`),
+    playing,
+    games,
+  };
+
+  if (exhausted) {
+    schedulerState.mode = "REPLAY";
+    schedulerState.completedSchedule =
+      schedulerState.completedSchedule || [];
+    schedulerState.completedSchedule.push(result);
+    schedulerState.replayIndex = 0;
+  } else {
+    schedulerState.completedSchedule =
+      schedulerState.completedSchedule || [];
+    schedulerState.completedSchedule.push(result);
+  }
+
+  return result;
+}
+
+
+
+
+
+function AischedulerNextRoundggg(schedulerState) {
+  const {
+    activeplayers,
+    numCourts,
+    fixedPairs,
+    restCount,
+    opponentMap,
+    pairPlayedSet,
+    lastRound,
+  } = schedulerState;
+
+  // ================= REPLAY MODE =================
+  if (schedulerState.mode === "REPLAY") {
+    const idx =
+      schedulerState.replayIndex %
+      schedulerState.completedSchedule.length;
+
     const replayRound = schedulerState.completedSchedule[idx];
     schedulerState.replayIndex++;
     schedulerState.roundIndex++;
