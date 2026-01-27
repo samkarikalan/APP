@@ -150,7 +150,7 @@ function overlapsTooMuch(pair1, pair2, lastGame) {
 }
 
 
-function 123AischedulerNextRound(schedulerState) {
+function AischedulerNextRound(schedulerState) {
   const {
     activeplayers,
     numCourts,
@@ -348,7 +348,7 @@ function 123AischedulerNextRound(schedulerState) {
   };
 }
 
-function AischedulerNextRound(schedulerState) {
+function bkAischedulerNextRound(schedulerState) {
   const {
     activeplayers,
     numCourts,
